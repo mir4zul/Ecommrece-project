@@ -1,8 +1,30 @@
 import { StarIcon } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
 import { animations } from "@/utils/animationUtils";
+import { useForm } from "@inertiajs/react";
 
-const SimpleProductCard = ({ title, image, price, discount, rating }) => {
+const SimpleProductCard = ({
+    id,
+    title,
+    name,
+    image,
+    imageUrl,
+    price,
+    discount,
+    discount_price,
+    rating = 0,
+}) => {
+    const productName = name ?? title;
+    const productImage = image ?? imageUrl;
+    const productDiscount = discount_price ?? discount;
+    const { get } = useForm();
+
+    const viewProduct = () => {
+        if (id) {
+            get(route("product.show", id));
+        }
+    };
+
     return (
         <>
             <motion.div
@@ -17,14 +39,18 @@ const SimpleProductCard = ({ title, image, price, discount, rating }) => {
                 <div className="flex gap-6">
                     <div className="h-36 w-32">
                         <img
-                            src={image}
-                            alt="Front of men's Basic Tee in black."
+                            src={productImage}
+                            alt={productName}
+                            onClick={viewProduct}
                             className="object-cover w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-105 cursor-pointer"
                         />
                     </div>
                     <div>
-                        <h3 className="text-gray-600 pb-1.5 group-hover:text-red-600 duration-200 ease-in-out cursor-pointer">
-                            {title}
+                        <h3
+                            onClick={viewProduct}
+                            className="text-gray-600 pb-1.5 group-hover:text-red-600 duration-200 ease-in-out cursor-pointer"
+                        >
+                            {productName}
                         </h3>
                         <div className="flex gap-1">
                             {[1, 2, 3, 4, 5].map((item) => {
@@ -42,17 +68,17 @@ const SimpleProductCard = ({ title, image, price, discount, rating }) => {
                             })}
                         </div>
                         <div className="flex gap-2 mt-2 transition-all transform duration-100 ease-in-out">
-                            {discount && (
+                            {productDiscount > 0 && (
                                 <p className="text-gray-400 line-through">
                                     ${price}
                                 </p>
                             )}
                             <p className="font-semibold text-gray-800">
                                 $
-                                {discount
+                                {productDiscount > 0
                                     ? (
                                           price -
-                                          (price * discount) / 100
+                                          (price * productDiscount) / 100
                                       ).toFixed(2)
                                     : price}
                             </p>

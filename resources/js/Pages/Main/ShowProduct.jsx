@@ -28,7 +28,11 @@ export default function ShowProduct({ product, products, carts, wishlists }) {
 
             <ProductDetails product={product} />
             <BoughtTogether />
-            <RelatedProducts products={products} />
+            <RelatedProducts
+                products={products}
+                currentProductId={product.id}
+                wishlists={wishlists}
+            />
             <Footer />
         </div>
     );

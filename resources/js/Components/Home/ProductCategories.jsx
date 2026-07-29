@@ -1,158 +1,42 @@
-import React from "react";
 import SimpleProductCard from "./SimpleProductCard";
-import ProductImage from "@/assets/products-1-min.jpg";
 
-const products = [
-    {
-        featured: [
-            {
-                id: 1,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                discount: 20,
-                rating: 0,
-                price: 400,
-            },
-            {
-                id: 2,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                rating: 4,
-                price: 400,
-            },
-            {
-                id: 3,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                discount: 20,
-                rating: 1,
-                price: 400,
-            },
-        ],
-        bestSale: [
-            {
-                id: 1,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                discount: 20,
-                rating: 5,
-                price: 400,
-            },
-            {
-                id: 2,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                rating: 4,
-                price: 400,
-            },
-            {
-                id: 3,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                discount: 20,
-                rating: 2,
-                price: 400,
-            },
-        ],
-        onSale: [
-            {
-                id: 1,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                rating: 0,
-                price: 400,
-            },
-            {
-                id: 2,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                rating: 4,
-                price: 100,
-            },
-            {
-                id: 3,
-                title: "Basic Tee",
-                imageUrl: ProductImage,
-                discount: 20,
-                rating: 4,
-                price: 400,
-            },
-        ],
-    },
-];
+const ProductColumn = ({ title, products }) => (
+    <section className="space-y-6 sm:space-y-8">
+        <div className="pb-2 text-center lg:text-left">
+            <h2 className="text-xl font-bold uppercase tracking-wide text-gray-800">
+                {title}
+            </h2>
+            <p className="mt-2 text-sm text-gray-500">Database demo products</p>
+        </div>
 
-export default function ProductCategories() {
+        {products.map((product) => (
+            <SimpleProductCard key={product.id} {...product} />
+        ))}
+    </section>
+);
+
+export default function ProductCategories({ products = [] }) {
+    const featured = products
+        .filter((product) => product.is_top_rated)
+        .slice(0, 3);
+    const bestSale = [...products]
+        .sort((first, second) => second.rating - first.rating)
+        .slice(0, 3);
+    const onSale = products
+        .filter((product) => product.discount_price > 0)
+        .slice(0, 3);
+
+    if (products.length === 0) {
+        return null;
+    }
+
     return (
-        <div className="mx-auto max-w-2xl lg:max-w-8xl px-4 lg:px-8 py-16 lg:py-24">
-            {products.map((product, index) => (
-                <div
-                    key={index}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-                >
-                    <div className="space-y-8">
-                        <div className="pb-8 text-center md:text-left">
-                            <h1 className="text-xl font-bold uppercase tracking-wide text-gray-800">
-                                Featured Products
-                            </h1>
-                            <p className="mt-2 text-gray-500 text-sm">
-                                Shop All Products
-                            </p>
-                        </div>
-                        {product.featured.map((item) => (
-                            <SimpleProductCard
-                                key={item.id}
-                                title={item.title}
-                                imageUrl={item.imageUrl}
-                                discount={item.discount}
-                                rating={item.rating}
-                                price={item.price}
-                            />
-                        ))}
-                    </div>
-
-                    <div className="space-y-8 pt-10 md:pt-0">
-                        <div className="pb-8 text-center">
-                            <h1 className="text-xl font-bold uppercase tracking-wide text-gray-800">
-                                Featured Products
-                            </h1>
-                            <p className="mt-2 text-gray-500 text-sm">
-                                Shop All Products
-                            </p>
-                        </div>
-                        {product.bestSale.map((item) => (
-                            <SimpleProductCard
-                                key={item.id}
-                                title={item.title}
-                                imageUrl={item.imageUrl}
-                                discount={item.discount}
-                                rating={item.rating}
-                                price={item.price}
-                            />
-                        ))}
-                    </div>
-
-                    <div className="space-y-8 pt-10 md:pt-0">
-                        <div className="pb-8 text-center">
-                            <h1 className="text-xl font-bold uppercase tracking-wide text-gray-800">
-                                Featured Products
-                            </h1>
-                            <p className="mt-2 text-gray-500 text-sm">
-                                Shop All Products
-                            </p>
-                        </div>
-                        {product.onSale.map((item) => (
-                            <SimpleProductCard
-                                key={item.id}
-                                title={item.title}
-                                imageUrl={item.imageUrl}
-                                discount={item.discount}
-                                rating={item.rating}
-                                price={item.price}
-                            />
-                        ))}
-                    </div>
-                </div>
-            ))}
+        <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16 lg:max-w-8xl lg:px-8 lg:py-24">
+            <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+                <ProductColumn title="Featured Products" products={featured} />
+                <ProductColumn title="Best Sellers" products={bestSale} />
+                <ProductColumn title="On Sale" products={onSale} />
+            </div>
         </div>
     );
 }
