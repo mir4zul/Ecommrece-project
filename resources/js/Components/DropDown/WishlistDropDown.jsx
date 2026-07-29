@@ -24,10 +24,10 @@ export default function WishlistDropDown({ dropdownOpen, wishlists }) {
         <>
             <div
                 className={clsx(
-                    "absolute right-0 max-h-96 top-[85px] w-[22rem] bg-white shadow-xl transform transition-all duration-500 ease-in-out",
+                    "absolute right-0 max-h-96 top-[85px] w-[min(22rem,calc(100vw-2rem))] bg-white shadow-xl transform transition-all duration-500 ease-in-out",
                     dropdownOpen === "wishlist"
                         ? "max-h-[500px] opacity-100 scale-y-100"
-                        : "max-h-0 opacity-0 scale-y-0"
+                        : "max-h-0 opacity-0 scale-y-0",
                 )}
                 style={{ transformOrigin: "top" }}
             >

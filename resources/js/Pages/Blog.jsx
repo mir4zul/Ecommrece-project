@@ -92,7 +92,7 @@ export default function Blog() {
 
                 <div className="bg-white">
                     <div className="mx-4 lg:mx-auto max-w-2xl lg:max-w-8xl py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-4 gap-10">
-                        <div className="col-span-3">
+                        <div className="lg:col-span-3">
                             {data.map((item) => (
                                 <motion.div>
                                     <BlogMain {...item} />

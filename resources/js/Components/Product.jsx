@@ -1,130 +1,116 @@
-import { useState, useRef } from "react";
-import { Slide } from "react-slideshow-image";
-import "react-slideshow-image/dist/styles.css";
-import product_1 from "../assets/products-1-min.jpg";
-import product_2 from "../assets/products-4-min.jpg";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-
-const products = [
-    { id: 1, src: product_1, alt: "Product 1" },
-    { id: 2, src: product_2, alt: "Product 2" },
-    { id: 3, src: product_1, alt: "Product 3" },
-    { id: 4, src: product_2, alt: "Product 4" },
-    { id: 5, src: product_1, alt: "Product 5" },
-    { id: 6, src: product_2, alt: "Product 6" },
-];
+import { useState } from "react";
+import { ZoomIn, ZoomOut } from "lucide-react";
 
 export default function Product({ product }) {
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [startIndex, setStartIndex] = useState(0);
-    const slideRef = useRef(null);
-    const visibleThumbnails = 4; // Show 4 thumbnails at a time
-    const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
+    const [isZoomed, setIsZoomed] = useState(false);
+    const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
 
-    // Move the thumbnail scroll left
-    const scrollLeft = () => {
-        setStartIndex((prev) => Math.max(0, prev - 1));
-    };
-
-    // Move the thumbnail scroll right
-    const scrollRight = () => {
-        setStartIndex((prev) =>
-            Math.min(products.length - visibleThumbnails, prev + 1)
-        );
-    };
-
-    const handleMouseMove = (e) => {
+    const updateZoomPosition = (event) => {
         const { left, top, width, height } =
-            e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setHoverPos({ x, y });
+            event.currentTarget.getBoundingClientRect();
+
+        setZoomPosition({
+            x: Math.max(
+                0,
+                Math.min(100, ((event.clientX - left) / width) * 100),
+            ),
+            y: Math.max(
+                0,
+                Math.min(100, ((event.clientY - top) / height) * 100),
+            ),
+        });
+    };
+
+    const toggleTouchZoom = (event) => {
+        if (event.pointerType === "touch" || event.pointerType === "pen") {
+            setZoomPosition({ x: 50, y: 50 });
+            setIsZoomed((current) => !current);
+        }
+    };
+
+    const toggleKeyboardZoom = (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setZoomPosition({ x: 50, y: 50 });
+            setIsZoomed((current) => !current);
+        }
     };
 
     return (
-        <div className="w-full mx-auto">
-            {/* Main Product Display */}
+        <div className="mx-auto w-full">
             <div
-                className="relative bg-gray-200 text-3xl select-none bg-cover bg-center"
-                onMouseMove={handleMouseMove}
+                role="button"
+                tabIndex={0}
+                aria-label={
+                    isZoomed ? "Zoom out product image" : "Zoom product image"
+                }
+                className={`group relative aspect-square w-full touch-manipulation overflow-hidden rounded-lg bg-gray-100 outline-none ring-red-500 focus-visible:ring-2 ${
+                    isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
+                }`}
+                onPointerEnter={(event) => {
+                    if (event.pointerType === "mouse") {
+                        setIsZoomed(true);
+                    }
+                }}
+                onPointerMove={(event) => {
+                    if (event.pointerType === "mouse") {
+                        updateZoomPosition(event);
+                    }
+                }}
+                onPointerLeave={(event) => {
+                    if (event.pointerType === "mouse") {
+                        setIsZoomed(false);
+                        setZoomPosition({ x: 50, y: 50 });
+                    }
+                }}
+                onPointerUp={toggleTouchZoom}
+                onKeyDown={toggleKeyboardZoom}
             >
-                <Slide
-                    ref={slideRef}
-                    arrows={false}
-                    autoplay={false}
-                    onChange={(previous, next) => setSelectedIndex(next)}
-                >
-                    {products.map((item, index) => (
-                        <div
-                            key={item.id}
-                            className="w-full h-[40rem] flex justify-center items-center"
-                        >
-                            <img
-                                src={product.image}
-                                alt={item.alt}
-                                className={`w-full h-full object-cover transition-transform duration-300 ${
-                                    selectedIndex === index ? "scale-105" : ""
-                                }`}
-                                style={{
-                                    transform: `scale(1.1) translate(${
-                                        (hoverPos.x - 50) / 10
-                                    }%, ${(hoverPos.y - 50) / 10}%)`,
-                                    transition: "transform 0.2s ease-out",
-                                }}
-                            />
-                        </div>
-                    ))}
-                </Slide>
+                <img
+                    src={product.image}
+                    alt={product.name}
+                    draggable="false"
+                    className="h-full w-full select-none object-contain transition-transform duration-200 ease-out"
+                    style={{
+                        transform: isZoomed ? "scale(2)" : "scale(1)",
+                        transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    }}
+                />
+
+                <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-white/90 p-2 text-gray-800 shadow-md dark:bg-gray-900/90 dark:text-gray-100">
+                    {isZoomed ? (
+                        <ZoomOut className="size-5" aria-hidden="true" />
+                    ) : (
+                        <ZoomIn className="size-5" aria-hidden="true" />
+                    )}
+                </span>
+
+                {!isZoomed && (
+                    <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/65 px-3 py-1.5 text-xs text-white opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
+                        Hover or tap to zoom
+                    </span>
+                )}
             </div>
 
-            {/* Thumbnails with Left & Right Navigation */}
-            <div className="flex gap-2 items-center justify-center mt-4">
-                {/* Left Button */}
+            <div className="mt-4 flex justify-center">
                 <button
-                    className={` ${
-                        startIndex === 0 ? "opacity-50 cursor-not-allowed" : ""
+                    type="button"
+                    onClick={() => {
+                        setZoomPosition({ x: 50, y: 50 });
+                        setIsZoomed((current) => !current);
+                    }}
+                    className={`h-20 w-20 overflow-hidden rounded-md border-2 bg-gray-100 p-1 transition sm:h-24 sm:w-24 ${
+                        isZoomed
+                            ? "border-red-500"
+                            : "border-gray-200 hover:border-red-400"
                     }`}
-                    onClick={scrollLeft}
-                    disabled={startIndex === 0}
+                    aria-label="Toggle product image zoom"
                 >
-                    <ChevronLeft size={24} className="text-gray-800" />
-                </button>
-
-                {/* Thumbnails Container with Animation */}
-                <div className="w-full overflow-hidden relative">
-                    <div
-                        className="flex gap-4 transition-transform duration-500 ease-in-out"
-                        style={{
-                            transform: `translateX(-${startIndex * 132}px)`,
-                        }} // 132px = thumbnail image width 128 + 4 gap
-                    >
-                        {products.map((item, index) => (
-                            <img
-                                key={item.id}
-                                src={item.src}
-                                alt={item.alt}
-                                className={`w-32 h-32 object-cover cursor-pointer transition-all duration-300 ${
-                                    selectedIndex === index
-                                        ? "border border-red-500"
-                                        : ""
-                                }`}
-                                onClick={() => slideRef.current.goTo(index)}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Right Button */}
-                <button
-                    className={` ${
-                        startIndex + visibleThumbnails >= products.length
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                    }`}
-                    onClick={scrollRight}
-                    disabled={startIndex + visibleThumbnails >= products.length}
-                >
-                    <ChevronRight size={24} className="text-gray-800" />
+                    <img
+                        src={product.image}
+                        alt=""
+                        className="h-full w-full object-cover"
+                    />
                 </button>
             </div>
         </div>

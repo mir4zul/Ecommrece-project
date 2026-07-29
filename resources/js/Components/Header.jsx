@@ -3,7 +3,9 @@ import {
     Bars3Icon,
     HeartIcon,
     MagnifyingGlassIcon,
+    MoonIcon,
     ShoppingCartIcon,
+    SunIcon,
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../assets/boria_1.png";
@@ -30,6 +32,22 @@ export default function Header({
     wishlists,
 }) {
     const [dropdownOpen, setDropdownOpen] = useState("");
+    const [isDark, setIsDark] = useState(() =>
+        document.documentElement.classList.contains("dark"),
+    );
+    const cartItems = Array.isArray(carts) ? carts : [];
+    const wishlistItems = Array.isArray(wishlists) ? wishlists : [];
+
+    const toggleTheme = () => {
+        const nextThemeIsDark = !isDark;
+
+        document.documentElement.classList.toggle("dark", nextThemeIsDark);
+        document.documentElement.style.colorScheme = nextThemeIsDark
+            ? "dark"
+            : "light";
+        localStorage.setItem("theme", nextThemeIsDark ? "dark" : "light");
+        setIsDark(nextThemeIsDark);
+    };
 
     return (
         <header className="absolute inset-x-0 top-0 z-50 max-w-screen-2xl px-4 sm:px-6 lg:px-8 mx-auto">
@@ -38,6 +56,24 @@ export default function Header({
                 className="flex items-center max-lg:flex-row-reverse justify-between"
             >
                 <div className="lg:hidden flex gap-4 items-center">
+                    <button
+                        type="button"
+                        onClick={toggleTheme}
+                        className="rounded-full p-1.5 text-gray-100 transition hover:bg-white/15 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-white/70"
+                        aria-label={
+                            isDark
+                                ? "Switch to light mode"
+                                : "Switch to dark mode"
+                        }
+                        title={isDark ? "Light mode" : "Dark mode"}
+                    >
+                        {isDark ? (
+                            <SunIcon className="size-6" aria-hidden="true" />
+                        ) : (
+                            <MoonIcon className="size-6" aria-hidden="true" />
+                        )}
+                    </button>
+
                     <div
                         onMouseOver={() => {
                             setDropdownOpen("wishlist");
@@ -52,11 +88,7 @@ export default function Header({
                             className="size-7 text-gray-100 hover:text-red-600 cursor-pointer duration-200 ease-in-out"
                         />
                         <span className="absolute -bottom-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-white bg-red-600 rounded-full">
-                            {wishlists === null ||
-                            wishlists.length === 0 ||
-                            wishlists.length === undefined
-                                ? "0"
-                                : wishlists.length}
+                            {wishlistItems.length}
                         </span>
                     </div>
 
@@ -84,17 +116,24 @@ export default function Header({
                             <CartDropDown
                                 item="cart"
                                 dropdownOpen={dropdownOpen}
-                                carts={carts}
+                                carts={cartItems}
                             />
                         )}
                     </div>
                 </div>
 
                 <div className="flex lg:flex-1 justify-between items-center">
-                    <a href="#" className="lg:-m-1.5 lg:p-1.5">
+                    <Link
+                        href={route("products.index")}
+                        className="lg:-m-1.5 lg:p-1.5"
+                    >
                         <span className="sr-only">Your Company</span>
-                        <img alt="" src={logo} className="h-7 lg:h-8 w-auto" />
-                    </a>
+                        <img
+                            alt="Boria home"
+                            src={logo}
+                            className="h-7 w-auto lg:h-8"
+                        />
+                    </Link>
 
                     <div className="hidden lg:flex lg:gap-x-8">
                         {navigation.map((item) => (
@@ -167,8 +206,8 @@ export default function Header({
                     </button>
                 </div>
 
-                <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-20">
-                    <div className="w-2/4 flex gap-1 justify-between items-center">
+                <div className="hidden min-w-0 lg:flex lg:flex-1 lg:justify-end lg:gap-6 xl:gap-12 2xl:gap-20">
+                    <div className="flex min-w-0 max-w-xs flex-1 items-center gap-1">
                         <label htmlFor="search">
                             <MagnifyingGlassIcon
                                 aria-hidden="true"
@@ -184,6 +223,30 @@ export default function Header({
                     </div>
 
                     <div className="flex gap-4 items-center">
+                        <button
+                            type="button"
+                            onClick={toggleTheme}
+                            className="rounded-full p-2 text-gray-100 transition hover:bg-white/15 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-white/70"
+                            aria-label={
+                                isDark
+                                    ? "Switch to light mode"
+                                    : "Switch to dark mode"
+                            }
+                            title={isDark ? "Light mode" : "Dark mode"}
+                        >
+                            {isDark ? (
+                                <SunIcon
+                                    className="size-6"
+                                    aria-hidden="true"
+                                />
+                            ) : (
+                                <MoonIcon
+                                    className="size-6"
+                                    aria-hidden="true"
+                                />
+                            )}
+                        </button>
+
                         <div
                             onMouseMove={() => {
                                 setDropdownOpen("wishlist");
@@ -200,11 +263,7 @@ export default function Header({
                                 />
 
                                 <span className="absolute -bottom-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-white bg-red-600 rounded-full">
-                                    {wishlists === null ||
-                                    wishlists.length === 0 ||
-                                    wishlists.length === undefined
-                                        ? 0
-                                        : wishlists.length}
+                                    {wishlistItems.length}
                                 </span>
                             </div>
 
@@ -212,7 +271,7 @@ export default function Header({
                                 <WishlistDropDown
                                     item="wishlist"
                                     dropdownOpen={dropdownOpen}
-                                    wishlists={wishlists}
+                                    wishlists={wishlistItems}
                                 />
                             )}
                         </div>
@@ -233,18 +292,14 @@ export default function Header({
                                 />
 
                                 <p className="absolute -bottom-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-white bg-red-600 rounded-full">
-                                    {carts === null ||
-                                    carts.length === 0 ||
-                                    carts.length === undefined
-                                        ? 0
-                                        : carts.length}
+                                    {cartItems.length}
                                 </p>
                             </div>
                             {dropdownOpen === "cart" && (
                                 <CartDropDown
                                     item="cart"
                                     dropdownOpen={dropdownOpen}
-                                    carts={carts}
+                                    carts={cartItems}
                                 />
                             )}
                         </div>
@@ -277,20 +332,24 @@ export default function Header({
                 className="lg:hidden"
             >
                 <div className="fixed inset-0 z-50" />
-                <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+                <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-900 dark:text-gray-100 dark:sm:ring-white/10">
                     <div className="flex items-center justify-between">
-                        <a href="#" className="-m-1.5 p-1.5">
+                        <Link
+                            href={route("products.index")}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="-m-1.5 p-1.5"
+                        >
                             <span className="sr-only">Your Company</span>
                             <img
-                                alt=""
-                                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+                                alt="Boria home"
+                                src={logo}
                                 className="h-8 w-auto"
                             />
-                        </a>
+                        </Link>
                         <button
                             type="button"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                            className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-200"
                         >
                             <span className="sr-only">Close menu</span>
                             <XMarkIcon aria-hidden="true" className="size-6" />
@@ -303,7 +362,7 @@ export default function Header({
                                     <a
                                         key={item.name}
                                         href={item.href}
-                                        className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                                        className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-gray-800"
                                     >
                                         {item.name}
                                     </a>
@@ -312,7 +371,7 @@ export default function Header({
                             <div className="py-6">
                                 <a
                                     href="#"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-gray-800"
                                 >
                                     Log in
                                 </a>

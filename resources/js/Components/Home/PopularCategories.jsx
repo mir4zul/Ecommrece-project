@@ -38,16 +38,16 @@ export default function PopularCategories() {
             viewport={{ once: true, amount: 0.2 }} // Trigger when 20% visible
             exit="hidden"
             whileInView="visible"
-            className="mx-auto max-w-2xl lg:max-w-8xl lg:px-8 py-16 lg:py-24"
+            className="mx-auto max-w-2xl lg:max-w-8xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24"
         >
             <div className="text-center">
-                <h1 className="text-3xl font-bold uppercase tracking-tight text-gray-800">
+                <h1 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-gray-800">
                     Popular Categories
                 </h1>
                 <p className="mt-4 text-gray-600">Shop All Products</p>
             </div>
 
-            <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            <div className="mt-8 sm:mt-12 grid grid-cols-1 min-[420px]:grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 xl:gap-8">
                 {data.map((item) => (
                     <div key={item.id} className="bg-gray-100 rounded">
                         <div className="relative aspect-h-1 aspect-w-1 w-full overflow-hidden rounded">

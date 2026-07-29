@@ -32,8 +32,8 @@ const data = [
 export default function Footer() {
     return (
         <div className="bg-secondary">
-            <div className="max-w-8xl mx-4 lg:mx-auto">
-                <div className="lg:grid grid-cols-6 gap-8 py-20 space-y-10 lg:space-y-0">
+            <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8 py-12 sm:py-16 lg:py-20">
                     {data.map((item) => (
                         <div key={item.title}>
                             <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ export default function Footer() {
                         </div>
                     ))}
 
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2 lg:col-span-2">
                         <img className="w-32 mx-auto" src={logo} alt="" />
                         <div className="mt-8 space-y-3 text-center text-sm text-neutral-500">
                             <p className="hover:text-red-600 duration-200 ease-in-out">
@@ -78,7 +78,7 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2 lg:col-span-2">
                         <div className="flex items-center gap-2">
                             <h3 className="text-lg font-semibold text-gray-200 uppercase">
                                 Sign Up For Newsletters
@@ -99,7 +99,7 @@ export default function Footer() {
                             />
                             <button
                                 type="submit"
-                                className="mt-2 rounded bg-red-600 py-3 px-6 text-sm font-semibold text-white hover:bg-red-700"
+                                className="mt-2 w-full sm:w-auto rounded bg-red-600 py-3 px-6 text-sm font-semibold text-white hover:bg-red-700"
                             >
                                 Subscribe
                             </button>

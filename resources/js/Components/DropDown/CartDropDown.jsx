@@ -14,17 +14,17 @@ export default function CartDropDown({ dropdownOpen, carts }) {
         <>
             <div
                 className={clsx(
-                    "absolute right-0 top-[85px] w-[22rem] bg-white overflow-hidden shadow-xl transform transition-all duration-500 ease-in-out",
+                    "absolute right-0 top-[85px] w-[min(22rem,calc(100vw-2rem))] bg-white overflow-hidden shadow-xl transform transition-all duration-500 ease-in-out",
                     dropdownOpen === "cart"
                         ? "max-h-[500px] opacity-100 scale-y-100"
-                        : "max-h-0 opacity-0 scale-y-0"
+                        : "max-h-0 opacity-0 scale-y-0",
                 )}
                 style={{ transformOrigin: "top" }}
             >
                 {carts === null ||
                 carts.length === 0 ||
                 carts.length === undefined ? (
-                    <div className="w-[22rem] p-4 space-y-2 bg-gray-100 border-b border-gray-200 dark:border-gray-300">
+                    <div className="w-full p-4 space-y-2 bg-gray-100 border-b border-gray-200 dark:border-gray-300">
                         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-600">
                             Your cart is empty
                         </h2>
@@ -33,7 +33,7 @@ export default function CartDropDown({ dropdownOpen, carts }) {
                         </p>
                     </div>
                 ) : (
-                    <div className="flex flex-col w-[22rem] bg-gray-100">
+                    <div className="flex flex-col w-full bg-gray-100">
                         {carts.map((cart) => (
                             <div
                                 key={cart.id}
@@ -91,17 +91,17 @@ export default function CartDropDown({ dropdownOpen, carts }) {
                                                           100
                                                   ).toFixed(2) * cart.quantity
                                                 : cart.price * cart.quantity),
-                                        0
+                                        0,
                                     )
                                     .toFixed(2)}
                             </p>
                         </div>
 
-                        <div className="flex justify-between p-4">
-                            <button className="bg-gray-500 text-white px-8 py-2 hover:bg-gray-600">
+                        <div className="flex flex-col min-[380px]:flex-row gap-2 justify-between p-4">
+                            <button className="bg-gray-500 text-white px-4 sm:px-8 py-2 hover:bg-gray-600">
                                 View Cart
                             </button>
-                            <button className="bg-red-500 text-white px-8 py-2 hover:bg-red-600">
+                            <button className="bg-red-500 text-white px-4 sm:px-8 py-2 hover:bg-red-600">
                                 Checkout
                             </button>
                         </div>

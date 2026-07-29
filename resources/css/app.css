@@ -177,6 +177,122 @@
         @apply border-border outline-ring/50;
     }
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background text-foreground transition-colors duration-300;
+        overflow-x: hidden;
+        min-width: 320px;
     }
+    img,
+    video {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Storefront components use Tailwind's fixed neutral utilities. These mappings
+   make those existing surfaces follow the class-based project theme. */
+.dark .bg-white {
+    background-color: rgb(17 24 39);
+}
+
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-slate-50,
+.dark .bg-slate-100 {
+    background-color: rgb(31 41 55);
+}
+
+.dark .bg-gray-200,
+.dark .bg-gray-300 {
+    background-color: rgb(55 65 81);
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-black,
+.dark .text-neutral-950 {
+    color: rgb(243 244 246);
+}
+
+.dark .text-gray-500,
+.dark .text-gray-400,
+.dark .text-neutral-400,
+.dark .text-neutral-500 {
+    color: rgb(156 163 175);
+}
+
+.dark .text-gray-300,
+.dark .text-gray-200,
+.dark .text-gray-100,
+.dark .text-gray-50 {
+    color: rgb(229 231 235);
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-neutral-200 {
+    border-color: rgb(55 65 81);
+}
+
+.dark .divide-gray-500\/10 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgb(75 85 99 / 0.5);
+}
+
+.dark .ring-black,
+.dark .ring-gray-900\/10 {
+    --tw-ring-color: rgb(156 163 175 / 0.35);
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+    border-color: rgb(75 85 99);
+    background-color: rgb(31 41 55);
+    color: rgb(243 244 246);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: rgb(156 163 175);
+}
+
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover,
+.dark .focus\:bg-gray-50:focus,
+.dark .focus\:bg-gray-100:focus {
+    background-color: rgb(55 65 81);
+}
+
+.dark .hover\:bg-gray-200:hover {
+    background-color: rgb(75 85 99);
+}
+
+.dark .hover\:bg-gray-800:hover,
+.dark .hover\:bg-gray-900:hover {
+    background-color: rgb(17 24 39);
+}
+
+/* Preserve semantic hover states after the neutral theme mappings above. */
+.dark .hover\:text-red-500:hover,
+.dark .group:hover .group-hover\:text-red-500 {
+    color: rgb(239 68 68);
+}
+
+.dark .hover\:text-red-600:hover,
+.dark .group:hover .group-hover\:text-red-600 {
+    color: rgb(220 38 38);
+}
+
+.dark .hover\:text-white:hover,
+.dark .dark\:hover\:text-white:hover {
+    color: rgb(255 255 255);
+}
+
+.dark .group\/cart:hover .group-hover\/cart\:text-red-500,
+.dark .group\/quick:hover .group-hover\/quick\:text-red-500,
+.dark .group\/compare:hover .group-hover\/compare\:text-red-500,
+.dark .group\/wishlist:hover .group-hover\/wishlist\:text-red-500 {
+    color: rgb(239 68 68);
 }

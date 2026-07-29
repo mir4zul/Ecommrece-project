@@ -80,9 +80,9 @@ export default function BoughtTogether() {
 
     return (
         <div className="bg-white">
-            <div className="mx-auto max-w-2xl lg:max-w-8xl py-16 lg:pb-24">
+            <div className="mx-auto max-w-2xl lg:max-w-8xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:pb-24">
                 <div className="max-w-xl mx-auto text-center">
-                    <h3 className="text-3xl font-bold uppercase tracking-tight text-gray-800">
+                    <h3 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-gray-800">
                         Frequently Bought Together
                     </h3>
                     <p className="mt-2 text-gray-600 text-sm">
@@ -91,16 +91,16 @@ export default function BoughtTogether() {
                 </div>
 
                 {/* Products */}
-                <div className="max-w-xl flex gap-4 mt-14">
-                    <div className="flex gap-2 items-center">
+                <div className="max-w-xl flex flex-col sm:flex-row gap-4 mt-10 sm:mt-14">
+                    <div className="flex gap-2 items-center justify-center sm:justify-start">
                         <img
-                            className="w-28 h-32"
+                            className="w-24 sm:w-28 h-28 sm:h-32 object-contain"
                             src="https://i.ibb.co/3kZ3VZx/1.png"
                             alt=""
                         />
                         +{" "}
                         <img
-                            className="w-28 h-32"
+                            className="w-24 sm:w-28 h-28 sm:h-32 object-contain"
                             src="https://i.ibb.co/3kZ3VZx/1.png"
                             alt=""
                         />
@@ -128,11 +128,11 @@ export default function BoughtTogether() {
 
                 {/* Tabs Section */}
                 <div className="">
-                    <ul className="flex justify-center gap-10 bg-gray-100 mt-10 py-4 rounded">
+                    <ul className="flex flex-wrap justify-center gap-x-5 gap-y-3 sm:gap-10 bg-gray-100 mt-10 px-3 py-4 rounded">
                         {Object.keys(tabContent).map((tab) => (
                             <li
                                 key={tab}
-                                className={`cursor-pointer font-medium text-lg transition-colors hover:text-red-600 ${
+                                className={`cursor-pointer text-center font-medium text-sm sm:text-base lg:text-lg transition-colors hover:text-red-600 ${
                                     activeTab === tab
                                         ? "text-red-600"
                                         : "text-gray-800"
@@ -150,11 +150,11 @@ export default function BoughtTogether() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-4 mt-16 border">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-12 sm:mt-16 border">
                     {Object.keys(shareTabContent).map((tab) => (
                         <div
                             key={tab}
-                            className="border-l last:border-l-0 p-4 flex gap-4 items-center hover:bg-gray-100 cursor-pointer"
+                            className="border-b sm:border-l lg:border-b-0 last:border-b-0 p-4 flex gap-4 items-center hover:bg-gray-100 cursor-pointer"
                         >
                             {shareTabContent[tab][0]}
                             <span>{shareTabContent[tab][1]}</span>

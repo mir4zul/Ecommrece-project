@@ -37,7 +37,7 @@ const ImageSlider = () => {
                             "w-4 h-4 rounded-full transition-all duration-300 border",
                             currentSlide === index
                                 ? "bg-red-500 scale-110"
-                                : "bg-gray-300 border-red-500 border"
+                                : "bg-gray-300 border-red-500 border",
                         )}
                     ></button>
                 ))}
@@ -56,32 +56,32 @@ const ImageSlider = () => {
                 {properties.map((property, index) => (
                     <div
                         key={index}
-                        className="relative bg-gray-200 py-32 text-3xl lg:min-h-[60rem] select-none bg-cover bg-center"
+                        className="relative min-h-[32rem] sm:min-h-[38rem] lg:min-h-[48rem] xl:min-h-[60rem] bg-gray-200 py-24 sm:py-32 text-3xl select-none bg-cover bg-center"
                         style={{
                             backgroundImage: `url(${property.image})`,
                         }}
                     >
                         {/* Animated content */}
-                        <div className="px-8 lg:px-0 mx-auto max-w-6xl lg:h-[40rem] flex flex-col justify-center">
+                        <div className="px-4 sm:px-8 lg:px-0 mx-auto max-w-6xl lg:h-[40rem] flex flex-col justify-center">
                             <div className="text-white">
                                 <h2
                                     className={clsx(
-                                        "lg:text-6xl uppercase tracking-tight lg:pb-3",
+                                        "text-3xl sm:text-4xl lg:text-6xl uppercase tracking-tight lg:pb-3",
                                         currentSlide === index
                                             ? "translate-x-0 opacity-100"
                                             : "-translate-x-20 opacity-0",
-                                        "transition-transform duration-700"
+                                        "transition-transform duration-700",
                                     )}
                                 >
                                     {property.titleSmall}
                                 </h2>
                                 <h1
                                     className={clsx(
-                                        "lg:text-6xl font-bold uppercase tracking-tight pb-6",
+                                        "text-3xl sm:text-4xl lg:text-6xl font-bold uppercase tracking-tight pb-6",
                                         currentSlide === index
                                             ? "translate-x-0 opacity-100"
                                             : "-translate-x-40 opacity-0",
-                                        "transition-transform duration-700"
+                                        "transition-transform duration-700",
                                     )}
                                 >
                                     {property.titleLarge}
@@ -92,7 +92,7 @@ const ImageSlider = () => {
                                         currentSlide === index
                                             ? "translate-x-0 opacity-100"
                                             : "-translate-x-40 opacity-0",
-                                        "transition-transform duration-700"
+                                        "transition-transform duration-700",
                                     )}
                                 >
                                     <div className="bg-white w-6 h-[1px]"></div>
@@ -102,7 +102,7 @@ const ImageSlider = () => {
                                             currentSlide === index
                                                 ? "translate-x-0 opacity-100"
                                                 : "-translate-x-40 opacity-0",
-                                            "transition-transform duration-700"
+                                            "transition-transform duration-700",
                                         )}
                                     >
                                         {property.paragraph}
@@ -115,7 +115,7 @@ const ImageSlider = () => {
                                         currentSlide === index
                                             ? "translate-x-0 opacity-100"
                                             : "translate-y-10 opacity-0",
-                                        "transition-transform duration-700 ease-in-out"
+                                        "transition-transform duration-700 ease-in-out",
                                     )}
                                 >
                                     Shop Now

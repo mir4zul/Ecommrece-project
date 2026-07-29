@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 
 const ProductGrid = () => {
     return (
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row overflow-hidden">
             {/* Left Section */}
             <motion.div
                 initial="hidden"
@@ -21,12 +21,12 @@ const ProductGrid = () => {
                 viewport={{ once: true, amount: 0.2 }} // Trigger when 20% visible
                 exit="hidden"
                 whileInView="visible"
-                className="flex-1 basis-1/2 lg:min-h-[50rem] bg-cover bg-center"
+                className="flex-1 basis-1/2 min-h-[26rem] sm:min-h-[32rem] lg:min-h-[50rem] bg-cover bg-center"
                 style={{
                     backgroundImage: `url(${banner1})`,
                 }}
             >
-                <div className="flex flex-col justify-center p-6 text-center pt-14 pb-20 lg:pt-0 lg:pt-24">
+                <div className="flex flex-col justify-center p-6 text-center pt-14 pb-20 lg:pt-24">
                     <h3 className="lg:text-lg font-medium uppercase tracking-tight text-gray-100">
                         20% Off ! Limited week deal
                     </h3>
@@ -53,12 +53,12 @@ const ProductGrid = () => {
                     viewport={{ once: true, amount: 0.2 }} // Trigger when 20% visible
                     exit="hidden"
                     whileInView="visible"
-                    className="flex-1 basis-1/2 lg:min-h-[25rem] object-cover bg-cover bg-center"
+                    className="flex-1 basis-1/2 min-h-[22rem] sm:min-h-[25rem] object-cover bg-cover bg-center"
                     style={{
                         backgroundImage: `url(${banner2})`,
                     }}
                 >
-                    <div className="pl-10 lg:pl-20 pt-10 pb-10 lg:mt-40">
+                    <div className="px-6 sm:pl-10 lg:pl-20 pt-10 pb-10 lg:mt-40">
                         <p className="lg:text-lg font-semibold uppercase tracking-tight text-gray-50">
                             Sam sung
                         </p>
@@ -71,7 +71,7 @@ const ProductGrid = () => {
                     </div>
                 </motion.div>
 
-                <div className="flex justify-between lg:min-h-[25rem]">
+                <div className="flex flex-col min-[420px]:flex-row justify-between lg:min-h-[25rem]">
                     <motion.div
                         initial="hidden"
                         animate="show"
@@ -82,7 +82,7 @@ const ProductGrid = () => {
                         viewport={{ once: true, amount: 0.2 }} // Trigger when 20% visible
                         exit="hidden"
                         whileInView="visible"
-                        className="w-1/2"
+                        className="w-full min-[420px]:w-1/2"
                     >
                         <img
                             src={banner4}
@@ -100,7 +100,7 @@ const ProductGrid = () => {
                         viewport={{ once: true, amount: 0.2 }} // Trigger when 20% visible
                         exit="hidden"
                         whileInView="visible"
-                        className="w-1/2"
+                        className="w-full min-[420px]:w-1/2"
                     >
                         <img
                             src={banner3}

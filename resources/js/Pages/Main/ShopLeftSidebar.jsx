@@ -51,7 +51,7 @@ export default function ShopLeftSidebar({ products, carts, wishlists }) {
                     />
                 </div>
 
-                <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-4 gap-10 my-14">
+                <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-10 my-8 sm:my-14">
                     {/* Sidebar */}
                     <aside className="hidden lg:block col-span-1">
                         <h2 className="text-gray-600 uppercase font-semibold text-lg tracking-wide">
@@ -131,7 +131,7 @@ export default function ShopLeftSidebar({ products, carts, wishlists }) {
                     </aside>
 
                     {/* Mobile Search */}
-                    <div className="col-span-4 lg:hidden mx-4 sm:mx-6 border border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow-sm bg-white">
+                    <div className="col-span-1 lg:hidden border border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow-sm bg-white">
                         <label htmlFor="search" className="flex items-center">
                             <MagnifyingGlassIcon className="w-6 h-6 text-gray-800" />
                         </label>
@@ -145,7 +145,7 @@ export default function ShopLeftSidebar({ products, carts, wishlists }) {
                     </div>
 
                     {/* Products Grid */}
-                    <div className="col-span-4 lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-auto gap-6 px-2 sm:px-4 lg:px-0">
+                    <div className="col-span-1 lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-auto gap-5 sm:gap-6">
                         {products.map((item) => (
                             <motion.div
                                 key={item.id}
