@@ -8,6 +8,9 @@ import { motion } from "framer-motion";
 import { animations } from "@/utils/animationUtils";
 import clsx from "clsx";
 import { useForm } from "@inertiajs/react";
+import { useState } from "react";
+import CompareModal from "@/Components/CompareModal";
+import { addCompareProduct } from "@/utils/compareProducts";
 
 const ProductCard = ({
     id,
@@ -17,10 +20,15 @@ const ProductCard = ({
     discount_price,
     stock,
     rating,
+    description,
+    is_new,
+    is_top_rated,
     className,
     showProduct,
     wishlists,
 }) => {
+    const [compareOpen, setCompareOpen] = useState(false);
+    const [compareMessage, setCompareMessage] = useState("");
     const { post } = useForm({
         product_id: id,
         quantity: 1,
@@ -36,6 +44,30 @@ const ProductCard = ({
         post(route("add-to-wishlist"));
     };
 
+    const compareProduct = () => {
+        const result = addCompareProduct({
+            id,
+            name,
+            image,
+            price,
+            discount_price,
+            stock,
+            rating,
+            description,
+            is_new,
+            is_top_rated,
+        });
+
+        setCompareMessage(
+            result.reason === "limit"
+                ? "You can compare up to 3 products. Remove one to add another."
+                : result.reason === "exists"
+                  ? "This product is already in your comparison."
+                  : "Product added to comparison.",
+        );
+        setCompareOpen(true);
+    };
+
     return (
         <>
             <motion.div
@@ -45,25 +77,25 @@ const ProductCard = ({
                 viewport={{ once: true, amount: 0.2 }} // Trigger when 20% visible
                 exit="hidden"
                 whileInView="visible"
-                className="group pb-2"
+                className="group flex h-full min-w-0 flex-col pb-2"
             >
-                <div className="relative ">
-                    <div>
+                <div className="relative aspect-square overflow-hidden rounded-md bg-gray-100">
+                    <div className="h-full w-full">
                         <motion.img
                             whileHover={{ scale: 1.07 }}
                             whileTap={{ scale: 0.8 }}
                             src={image}
-                            onClick={() => showProduct(id)}
-                            alt="Front of men's Basic Tee in black."
+                            onClick={() => showProduct?.(id)}
+                            alt={name}
                             className={clsx(
-                                "object-cover w-full",
-                                className ? className : "h-full"
+                                "h-full w-full cursor-pointer object-cover",
+                                className ? className : "h-full",
                             )}
                         />
                     </div>
 
                     {/* Wishlist or Compare */}
-                    <div className="absolute right-2 top-2 bg-white p-2 space-y-1 shadow transition-all transform duration-300 ease-in-out group-hover:translate-x-0 translate-x-3 group-hover:opacity-100 opacity-0">
+                    <div className="absolute right-2 top-2 translate-x-0 space-y-1 bg-white p-2 opacity-100 shadow transition-all duration-300 ease-in-out sm:translate-x-3 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100">
                         <div
                             onClick={addToWishlist}
                             className="relative group/wishlist cursor-pointer"
@@ -86,7 +118,12 @@ const ProductCard = ({
                             </div>
                         </div>
                         <hr />
-                        <div className="relative group/compare">
+                        <button
+                            type="button"
+                            onClick={compareProduct}
+                            className="relative block group/compare"
+                            aria-label={`Compare ${name}`}
+                        >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -108,7 +145,7 @@ const ProductCard = ({
                                 <p>Compare</p>
                                 <div className="absolute top-1/2 transform -translate-y-1/2 h-2 w-2 bg-black rotate-45 -right-1"></div>
                             </div>
-                        </div>
+                        </button>
                     </div>
 
                     {/* Price discount */}
@@ -130,8 +167,13 @@ const ProductCard = ({
                     )}
                 </div>
 
-                <div className="pt-4 lg:pt-6 relative">
-                    <h3 className="text-gray-800 pb-1.5">{name}</h3>
+                <div className="relative flex min-h-28 flex-1 flex-col pt-4 lg:pt-5">
+                    <h3
+                        className="truncate pb-1.5 font-medium text-gray-800"
+                        title={name}
+                    >
+                        {name}
+                    </h3>
                     <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((item) => {
                             return rating >= item ? (
@@ -147,7 +189,7 @@ const ProductCard = ({
                             );
                         })}
                     </div>
-                    <div className="flex gap-2 mt-2 transition-all transform duration-100 ease-in-out group-hover:opacity-0 opacity-100">
+                    <div className="mt-2 flex min-h-6 gap-2 opacity-100 transition-all duration-100 ease-in-out sm:group-hover:opacity-0">
                         {discount_price > 0 && (
                             <p className="text-gray-400 line-through">
                                 ${price}
@@ -164,28 +206,37 @@ const ProductCard = ({
                         </p>
                     </div>
 
-                    <div className="absolute w-full left-0 bottom-0 transition-all transform duration-300 ease-in-out group-hover:translate-y-0 translate-y-3 group-hover:opacity-100 opacity-0">
-                        <div className="flex justify-between pr-2 pt-2">
+                    <div className="mt-auto w-full pt-3 opacity-100 transition-all duration-300 ease-in-out sm:absolute sm:bottom-0 sm:left-0 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100">
+                        <div className="flex items-center justify-between gap-2">
                             <button
                                 onClick={() => addToCart(id)}
-                                className="flex gap-1 items-end group/cart cursor-pointer duration-200 ease-in-out"
+                                className="flex min-w-0 items-center gap-1 group/cart cursor-pointer duration-200 ease-in-out"
                             >
                                 <ShoppingBagIcon className="w-4 lg:w-5 h-4 lg:h-5 text-gray-800 group-hover/cart:text-red-500" />
-                                <p className="text-xs lg:text-sm text-gray-800 group-hover/cart:text-red-500">
+                                <p className="truncate text-xs text-gray-800 group-hover/cart:text-red-500 lg:text-sm">
                                     Add to Cart
                                 </p>
                             </button>
 
-                            <div className="flex gap-1 items-end group/quick cursor-pointer">
+                            <button
+                                type="button"
+                                onClick={() => showProduct?.(id)}
+                                className="flex min-w-0 items-center gap-1 group/quick cursor-pointer"
+                            >
                                 <MagnifyingGlassIcon className="w-4 lg:w-5 h-4 lg:h-5 text-gray-800 group-hover/quick:text-red-500" />
-                                <p className="text-xs lg:text-sm text-gray-800 group-hover/quick:text-red-500">
+                                <p className="truncate text-xs text-gray-800 group-hover/quick:text-red-500 lg:text-sm">
                                     Quick View
                                 </p>
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
             </motion.div>
+            <CompareModal
+                open={compareOpen}
+                onClose={() => setCompareOpen(false)}
+                message={compareMessage}
+            />
         </>
     );
 };
