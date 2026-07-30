@@ -18,8 +18,9 @@ import MenuDropDown from "./DropDown/MenuDropDown";
 import WishlistDropDown from "./DropDown/WishlistDropDown";
 
 const navigation = [
-    { name: "Home", href: "#" },
-    { name: "Shop", href: "#", down: true },
+    { name: "Home", href: "/" },
+    { name: "Shop", href: "/shop-left-sidebar", down: true },
+    { name: "My Orders", href: "/my-orders" },
     { name: "Blog", href: "#" },
     { name: "Page", href: "#", down: true },
     { name: "About us", href: "#" },
@@ -154,7 +155,7 @@ export default function Header({
                                 }}
                             >
                                 <Link
-                                    to={item.href}
+                                    href={item.href}
                                     className="text-sm font-bold text-white flex py-4 lg:py-8"
                                 >
                                     {item.name}
@@ -359,13 +360,13 @@ export default function Header({
                         <div className="-my-6 divide-y divide-gray-500/10">
                             <div className="space-y-2 py-6">
                                 {navigation.map((item) => (
-                                    <a
+                                    <Link
                                         key={item.name}
                                         href={item.href}
                                         className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-gray-800"
                                     >
                                         {item.name}
-                                    </a>
+                                    </Link>
                                 ))}
                             </div>
                             <div className="py-6">
