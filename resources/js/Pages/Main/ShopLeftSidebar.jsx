@@ -327,20 +327,7 @@ export default function ShopLeftSidebar({
                 </div>
 
                 <main className="mx-auto max-w-screen-2xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-                    <div className="mb-8 text-center">
-                        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-600">
-                            Our collection
-                        </p>
-                        <h1 className="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">
-                            All Products
-                        </h1>
-                        <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-500 sm:text-base">
-                            Search the complete catalog and narrow the results
-                            with the filters.
-                        </p>
-                    </div>
-
-                    <div className="mb-8 flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:flex-row">
+                    <div className="mb-6 flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-3 shadow-sm sm:flex-row">
                         <div className="relative flex-1">
                             <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                             <input
@@ -361,7 +348,7 @@ export default function ShopLeftSidebar({
                                     }
                                 }}
                                 placeholder="Search products by name or description..."
-                                className="w-full rounded-lg border-gray-300 py-3 pl-10 pr-4 text-gray-800 focus:border-red-500 focus:ring-red-500"
+                                className="w-full rounded-lg border-gray-300 py-2 pl-10 pr-4 text-sm text-gray-800 focus:border-red-500 focus:ring-red-500"
                             />
                         </div>
                         <select
@@ -382,7 +369,7 @@ export default function ShopLeftSidebar({
                         <button
                             type="button"
                             onClick={() => setFiltersOpen(true)}
-                            className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-3 font-medium text-gray-700 lg:hidden"
+                            className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 lg:hidden"
                         >
                             <AdjustmentsHorizontalIcon className="size-5" />
                             Filters
