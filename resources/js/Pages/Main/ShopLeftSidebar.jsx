@@ -439,7 +439,7 @@ export default function ShopLeftSidebar({
                                     {paginatedProducts.map((product) => (
                                         <article
                                             key={product.id}
-                                            className="min-w-0 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                                            className="moving-product-card min-w-0 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
                                         >
                                             <ProductCard
                                                 {...product}

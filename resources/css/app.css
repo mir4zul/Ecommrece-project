@@ -297,41 +297,53 @@
     color: rgb(239 68 68);
 }
 
-@keyframes moving-product-border {
+@property --product-border-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes rotate-product-border {
     to {
-        transform: rotate(1turn);
+        --product-border-angle: 360deg;
     }
 }
 
-.moving-border-shell {
-    isolation: isolate;
+.moving-product-card:hover,
+.moving-product-card:focus-within {
+    border-color: transparent;
+    background:
+        linear-gradient(#ffffff, #ffffff) padding-box,
+        conic-gradient(
+                from var(--product-border-angle),
+                transparent 0deg 292deg,
+                #ef4444 304deg,
+                #f97316 316deg,
+                #facc15 326deg,
+                transparent 340deg
+            )
+            border-box;
+    animation: rotate-product-border 5s linear infinite;
 }
 
-.moving-border-beam {
-    inset: -180%;
-    z-index: 0;
-    opacity: 0;
-    background: conic-gradient(
-        from 0deg,
-        transparent 0deg 245deg,
-        #ef4444 275deg,
-        #f97316 300deg,
-        #facc15 320deg,
-        transparent 345deg
-    );
-    animation: moving-product-border 2.4s linear infinite;
-    animation-play-state: paused;
-    transition: opacity 200ms ease;
-}
-
-.moving-border-shell:hover > .moving-border-beam,
-.moving-border-shell:focus-within > .moving-border-beam {
-    opacity: 1;
-    animation-play-state: running;
+.dark .moving-product-card:hover,
+.dark .moving-product-card:focus-within {
+    background:
+        linear-gradient(rgb(17 24 39), rgb(17 24 39)) padding-box,
+        conic-gradient(
+                from var(--product-border-angle),
+                transparent 0deg 292deg,
+                #22d3ee 304deg,
+                #3b82f6 316deg,
+                #a855f7 326deg,
+                transparent 340deg
+            )
+            border-box;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .moving-border-beam {
+    .moving-product-card:hover,
+    .moving-product-card:focus-within {
         animation: none;
     }
 }
