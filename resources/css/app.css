@@ -296,3 +296,42 @@
 .dark .group\/wishlist:hover .group-hover\/wishlist\:text-red-500 {
     color: rgb(239 68 68);
 }
+
+@keyframes moving-product-border {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+.moving-border-shell {
+    isolation: isolate;
+}
+
+.moving-border-beam {
+    inset: -180%;
+    z-index: 0;
+    opacity: 0;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg 245deg,
+        #ef4444 275deg,
+        #f97316 300deg,
+        #facc15 320deg,
+        transparent 345deg
+    );
+    animation: moving-product-border 2.4s linear infinite;
+    animation-play-state: paused;
+    transition: opacity 200ms ease;
+}
+
+.moving-border-shell:hover > .moving-border-beam,
+.moving-border-shell:focus-within > .moving-border-beam {
+    opacity: 1;
+    animation-play-state: running;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .moving-border-beam {
+        animation: none;
+    }
+}
