@@ -88,7 +88,7 @@ export default function Header({
         >
             <nav
                 aria-label="Global"
-                className={`mx-auto flex max-w-screen-2xl items-center justify-between transition-all duration-300 max-lg:flex-row-reverse ${isScrolled ? "min-h-[60px]" : "min-h-[85px]"}`}
+                className={`mx-auto flex max-w-screen-2xl items-center justify-between transition-all duration-300 max-lg:flex-row-reverse ${isScrolled ? "min-h-[52px]" : "min-h-[85px]"}`}
             >
                 <div className="lg:hidden flex gap-4 items-center">
                     <button
@@ -134,7 +134,7 @@ export default function Header({
                         onMouseOut={() => {
                             setDropdownOpen("");
                         }}
-                        className={`relative transition-all ${isScrolled ? "py-3" : "py-5"}`}
+                        className={`relative transition-all ${isScrolled ? "py-2" : "py-5"}`}
                     >
                         <div className="relative">
                             <ShoppingCartIcon
@@ -166,7 +166,7 @@ export default function Header({
                         <img
                             alt="Boria home"
                             src={logo}
-                            className={`w-auto transition-all duration-300 ${isScrolled ? "h-6 lg:h-7" : "h-7 lg:h-8"}`}
+                            className={`w-auto transition-all duration-300 ${isScrolled ? "h-5 lg:h-6" : "h-7 lg:h-8"}`}
                         />
                     </Link>
 
@@ -190,7 +190,7 @@ export default function Header({
                             >
                                 <Link
                                     href={item.href}
-                                    className={`flex text-sm font-bold text-white transition-all ${isScrolled ? "py-4" : "py-4 lg:py-8"}`}
+                                    className={`flex text-sm font-bold text-white transition-all ${isScrolled ? "py-3" : "py-4 lg:py-8"}`}
                                 >
                                     {item.name}
                                     {item.down && (
