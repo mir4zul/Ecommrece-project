@@ -50,34 +50,7 @@ export default function MyOrderDetails({ order, carts = [], wishlists = [] }) {
                             </p>
                         </div>
                     </div>
-                    <nav className="sticky top-0 z-20 mt-8 overflow-x-auto rounded-xl border border-gray-200 bg-white/95 px-3 shadow-sm backdrop-blur">
-                        <div className="flex min-w-max items-center gap-1 py-2 text-sm font-semibold">
-                            <a
-                                href="#order-info"
-                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
-                            >
-                                Order Info
-                            </a>
-                            <a
-                                href="#order-timeline"
-                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
-                            >
-                                Order Timeline
-                            </a>
-                            <a
-                                href="#order-products"
-                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
-                            >
-                                Products
-                            </a>
-                            <a
-                                href="#delivery-payment"
-                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
-                            >
-                                Delivery & Payment
-                            </a>
-                        </div>
-                    </nav>
+
                     <section
                         id="order-timeline"
                         className="scroll-mt-24 mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7"
