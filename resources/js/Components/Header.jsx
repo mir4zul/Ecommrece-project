@@ -9,7 +9,7 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../assets/boria_1.png";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 import DropDown from "./DropDown/ShopDropDown";
 import PageDropDown from "./DropDown/PageDropDown";
@@ -32,6 +32,7 @@ export default function Header({
     carts,
     wishlists,
 }) {
+    const { url: currentUrl } = usePage();
     const [dropdownOpen, setDropdownOpen] = useState("");
     const [searchQuery, setSearchQuery] = useState(
         () => new URLSearchParams(window.location.search).get("search") ?? "",
@@ -64,6 +65,25 @@ export default function Header({
 
         return () => window.removeEventListener("scroll", handleScroll);
     }, [mobileMenuOpen]);
+
+    useEffect(() => {
+        const queryString = currentUrl.split("?")[1] ?? "";
+        setSearchQuery(new URLSearchParams(queryString).get("search") ?? "");
+    }, [currentUrl]);
+
+    const updateSearchQuery = (value) => {
+        setSearchQuery(value);
+        const queryString = currentUrl.split("?")[1] ?? "";
+        const hasActiveSearch = new URLSearchParams(queryString).has("search");
+
+        if (value === "" && hasActiveSearch) {
+            router.get(
+                route("products.shopLeftSidebar"),
+                {},
+                { replace: true, preserveScroll: true },
+            );
+        }
+    };
 
     const cartItems = Array.isArray(carts) ? carts : [];
     const wishlistItems = Array.isArray(wishlists) ? wishlists : [];
@@ -268,8 +288,9 @@ export default function Header({
                             id="header-product-search"
                             value={searchQuery}
                             onChange={(event) =>
-                                setSearchQuery(event.target.value)
+                                updateSearchQuery(event.target.value)
                             }
+
                             placeholder="Search for products..."
                             className="w-full rounded-md border-none bg-transparent px-3 py-1.5 text-gray-200 placeholder:text-sm placeholder:text-gray-200 focus:border-red-600 focus:outline-none focus:ring-red-600"
                         />

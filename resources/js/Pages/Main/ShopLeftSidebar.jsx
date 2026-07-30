@@ -6,7 +6,7 @@ import {
     MagnifyingGlassIcon,
     XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 import { useMemo, useState } from "react";
 
 const getSalePrice = (product) => {
@@ -118,6 +118,11 @@ export default function ShopLeftSidebar({
         setOnlyNew(false);
         setOnlyTopRated(false);
         setSortBy("featured");
+        router.get(
+            route("products.shopLeftSidebar"),
+            {},
+            { replace: true, preserveScroll: true },
+        );
     };
 
     const showProduct = (id) => get(route("product.show", id));
@@ -306,9 +311,20 @@ export default function ShopLeftSidebar({
                             <input
                                 type="search"
                                 value={search}
-                                onChange={(event) =>
-                                    setSearch(event.target.value)
-                                }
+                                onChange={(event) => {
+                                    const value = event.target.value;
+                                    setSearch(value);
+                                    if (value === "" && initialSearch !== "") {
+                                        router.get(
+                                            route("products.shopLeftSidebar"),
+                                            {},
+                                            {
+                                                replace: true,
+                                                preserveScroll: true,
+                                            },
+                                        );
+                                    }
+                                }}
                                 placeholder="Search products by name or description..."
                                 className="w-full rounded-lg border-gray-300 py-3 pl-10 pr-4 text-gray-800 focus:border-red-500 focus:ring-red-500"
                             />
