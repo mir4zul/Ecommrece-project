@@ -7,7 +7,7 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Head, router, useForm } from "@inertiajs/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const getSalePrice = (product) => {
     const price = Number(product.price) || 0;
@@ -34,6 +34,8 @@ export default function ShopLeftSidebar({
     const [onlyNew, setOnlyNew] = useState(false);
     const [onlyTopRated, setOnlyTopRated] = useState(false);
     const [sortBy, setSortBy] = useState("featured");
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
     const { get } = useForm();
 
     const categories = useMemo(
@@ -57,6 +59,7 @@ export default function ShopLeftSidebar({
             const matchesSearch =
                 !normalizedSearch ||
                 product.name?.toLowerCase().includes(normalizedSearch) ||
+                product.category?.toLowerCase().includes(normalizedSearch) ||
                 product.description?.toLowerCase().includes(normalizedSearch);
             const matchesCategory =
                 selectedCategory === "all" ||
@@ -108,6 +111,38 @@ export default function ShopLeftSidebar({
         selectedCategory,
         sortBy,
     ]);
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredProducts.length / perPage),
+    );
+    const safeCurrentPage = Math.min(currentPage, totalPages);
+    const pageStart = (safeCurrentPage - 1) * perPage;
+    const paginatedProducts = filteredProducts.slice(
+        pageStart,
+        pageStart + perPage,
+    );
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [
+        availability,
+        maxPrice,
+        minimumRating,
+        onlyNew,
+        onlyTopRated,
+        perPage,
+        search,
+        selectedCategory,
+        sortBy,
+    ]);
+
+    const changePage = (page) => {
+        setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+        document
+            .getElementById("product-results")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
 
     const resetFilters = () => {
         setSearch("");
@@ -359,20 +394,49 @@ export default function ShopLeftSidebar({
                             {filterPanel}
                         </aside>
 
-                        <section className="lg:col-span-3">
-                            <div className="mb-5 flex items-center justify-between gap-4">
+                        <section
+                            id="product-results"
+                            className="scroll-mt-16 lg:col-span-3"
+                        >
+                            <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
                                 <p className="text-sm text-gray-500">
                                     Showing{" "}
                                     <strong className="text-gray-800">
-                                        {filteredProducts.length}
+                                        {filteredProducts.length === 0
+                                            ? 0
+                                            : pageStart + 1}
+                                        –
+                                        {Math.min(
+                                            pageStart + perPage,
+                                            filteredProducts.length,
+                                        )}
                                     </strong>{" "}
-                                    of {products.length} products
+                                    of {filteredProducts.length} matching
+                                    products
                                 </p>
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                                    Show
+                                    <select
+                                        value={perPage}
+                                        onChange={(event) =>
+                                            setPerPage(
+                                                Number(event.target.value),
+                                            )
+                                        }
+                                        className="rounded-lg border-gray-300 bg-white py-2 text-sm focus:border-red-500 focus:ring-red-500"
+                                    >
+                                        {[10, 30, 50, 100].map((size) => (
+                                            <option key={size} value={size}>
+                                                {size}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    per page
+                                </label>
                             </div>
-
                             {filteredProducts.length > 0 ? (
                                 <div className="grid auto-rows-fr grid-cols-1 gap-5 min-[430px]:grid-cols-2 xl:grid-cols-3">
-                                    {filteredProducts.map((product) => (
+                                    {paginatedProducts.map((product) => (
                                         <article
                                             key={product.id}
                                             className="min-w-0 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
@@ -403,6 +467,53 @@ export default function ShopLeftSidebar({
                                     </button>
                                 </div>
                             )}
+                            {totalPages > 1 && (
+                                <nav
+                                    aria-label="Product pagination"
+                                    className="mt-8 flex flex-wrap items-center justify-center gap-2"
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            changePage(safeCurrentPage - 1)
+                                        }
+                                        disabled={safeCurrentPage === 1}
+                                        className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:border-red-500 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        Previous
+                                    </button>
+                                    {Array.from(
+                                        { length: totalPages },
+                                        (_, index) => index + 1,
+                                    ).map((page) => (
+                                        <button
+                                            key={page}
+                                            type="button"
+                                            onClick={() => changePage(page)}
+                                            aria-current={
+                                                page === safeCurrentPage
+                                                    ? "page"
+                                                    : undefined
+                                            }
+                                            className={`size-10 rounded-lg text-sm font-bold transition ${page === safeCurrentPage ? "bg-red-600 text-white shadow" : "border border-gray-300 bg-white text-gray-700 hover:border-red-500 hover:text-red-600"}`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            changePage(safeCurrentPage + 1)
+                                        }
+                                        disabled={
+                                            safeCurrentPage === totalPages
+                                        }
+                                        className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:border-red-500 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        Next
+                                    </button>
+                                </nav>
+                            )}{" "}
                         </section>
                     </div>
                 </main>
