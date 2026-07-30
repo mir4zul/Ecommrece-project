@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Wishlist;
+use App\Services\Couriers\PathaoCourier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -217,11 +218,50 @@ class AdminController extends Controller
         $data = $request->validate([
             'status' => ['required', 'in:confirmed,processing,shipped,delivered,cancelled'],
             'note' => ['nullable', 'string', 'max:1000'],
-            'courier_name' => ['required_if:status,shipped', 'nullable', 'string', 'max:100'],
-            'tracking_number' => ['required_if:status,shipped', 'nullable', 'string', 'max:100'],
+            'courier_name' => ['required_if:status,confirmed', 'nullable', 'in:pathao,paperfly,manual'],
+            'tracking_number' => ['nullable', 'string', 'max:100'],
+            'courier_city_id' => ['nullable', 'integer', 'min:1'],
+            'courier_zone_id' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        DB::transaction(function () use ($request, $order, $data): void {
+        $booking = null;
+        if ($data['status'] === 'confirmed' && $order->status !== 'pending') {
+            throw ValidationException::withMessages([
+                'status' => "Order cannot move from {$order->status} to confirmed.",
+            ]);
+        }
+        if (
+            $data['status'] === 'confirmed'
+            && ($data['courier_name'] ?? null) === 'pathao'
+            && (blank($data['courier_city_id'] ?? null) || blank($data['courier_zone_id'] ?? null))
+        ) {
+            throw ValidationException::withMessages([
+                'courier_city_id' => 'Pathao city ID is required.',
+                'courier_zone_id' => 'Pathao zone ID is required.',
+            ]);
+        }
+        if ($data['status'] === 'confirmed') {
+            if ($data['courier_name'] === 'pathao') {
+                try {
+                    $booking = app(PathaoCourier::class)->book(
+                        $order->loadMissing('items'),
+                        (int) $data['courier_city_id'],
+                        (int) $data['courier_zone_id'],
+                    );
+                } catch (\Throwable $exception) {
+                    report($exception);
+                    throw ValidationException::withMessages([
+                        'courier_name' => 'Pathao booking failed: '.$exception->getMessage(),
+                    ]);
+                }
+            } elseif ($data['courier_name'] === 'paperfly') {
+                $booking = ['status' => 'action_required', 'reference' => null];
+            } else {
+                $booking = ['status' => 'manual', 'reference' => null];
+            }
+        }
+
+        DB::transaction(function () use ($request, $order, $data, $booking): void {
             $order = Order::query()->with('items')->lockForUpdate()->findOrFail($order->id);
             $transitions = [
                 'pending' => ['confirmed', 'cancelled'],
@@ -244,10 +284,15 @@ class AdminController extends Controller
 
             if ($data['status'] === 'confirmed') {
                 $updates['confirmed_at'] = now();
+                $updates['courier_name'] = $data['courier_name'];
+                $updates['courier_booking_status'] = $booking['status'];
+                $updates['courier_booking_reference'] = $booking['reference'];
+                $updates['tracking_number'] = $booking['reference'];
+                $updates['courier_booked_at'] = $booking['status'] === 'booked' ? now() : null;
             }
             if ($data['status'] === 'shipped') {
-                $updates['courier_name'] = $data['courier_name'];
-                $updates['tracking_number'] = $data['tracking_number'];
+                $updates['courier_name'] = $data['courier_name'] ?? $order->courier_name;
+                $updates['tracking_number'] = $data['tracking_number'] ?? $order->tracking_number;
                 $updates['shipped_at'] = now();
             }
             if ($data['status'] === 'delivered') {

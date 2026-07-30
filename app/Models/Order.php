@@ -10,7 +10,9 @@ class Order extends Model
         'user_id', 'customer_name', 'customer_email', 'customer_phone',
         'shipping_address', 'shipping_city', 'shipping_postal_code',
         'order_number', 'status', 'payment_status', 'payment_method',
-        'courier_name', 'tracking_number', 'confirmed_at', 'shipped_at',
+        'courier_name', 'tracking_number', 'courier_booking_status',
+        'courier_booking_reference', 'courier_booking_error', 'courier_booked_at',
+        'confirmed_at', 'shipped_at',
         'delivered_at', 'cancelled_at', 'subtotal',
         'discount', 'shipping', 'total', 'stock_deducted', 'ordered_at',
     ];
@@ -24,6 +26,7 @@ class Order extends Model
             'total' => 'decimal:2',
             'stock_deducted' => 'boolean',
             'ordered_at' => 'datetime',
+            'courier_booked_at' => 'datetime',
             'confirmed_at' => 'datetime',
             'shipped_at' => 'datetime',
             'delivered_at' => 'datetime',

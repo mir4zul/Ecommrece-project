@@ -24,6 +24,8 @@ export default function Show({ order }) {
         note: "",
         courier_name: order.courier_name ?? "",
         tracking_number: order.tracking_number ?? "",
+        courier_city_id: "",
+        courier_zone_id: "",
     });
     const paymentForm = useForm({ payment_status: order.payment_status });
     const updateStatus = (event) => {
@@ -208,11 +210,11 @@ export default function Show({ order }) {
                                     ))}
                                 </select>
                             </label>
-                            {data.status === "shipped" && (
+                            {["confirmed", "shipped"].includes(data.status) && (
                                 <div className="mt-3 space-y-3">
                                     <label className="block text-xs font-semibold">
                                         Courier
-                                        <input
+                                        <select
                                             value={data.courier_name}
                                             onChange={(event) =>
                                                 setData(
@@ -220,14 +222,98 @@ export default function Show({ order }) {
                                                     event.target.value,
                                                 )
                                             }
-                                            className="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900"
-                                        />
+                                            className="mt-1 w-full rounded-lg border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-900"
+                                        >
+                                            <option value="">
+                                                Select courier
+                                            </option>
+                                            <option value="pathao">
+                                                Pathao Courier
+                                            </option>
+                                            <option value="paperfly">
+                                                Paperfly
+                                            </option>
+                                            <option value="manual">
+                                                Other / Manual
+                                            </option>
+                                        </select>
                                     </label>
                                     {errors.courier_name && (
                                         <p className="text-xs text-red-600">
                                             {errors.courier_name}
                                         </p>
                                     )}
+                                    <div className="flex gap-3 text-xs font-semibold">
+                                        <a
+                                            href="https://merchant.pathao.com/"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-red-600 underline"
+                                        >
+                                            Pathao Merchant
+                                        </a>
+                                        <a
+                                            href="https://paperfly.com.bd/"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-blue-600 underline"
+                                        >
+                                            Paperfly Merchant
+                                        </a>
+                                    </div>
+                                    {data.status === "confirmed" &&
+                                        data.courier_name === "pathao" && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <label className="block text-xs font-semibold">
+                                                    Pathao city ID
+                                                    <input
+                                                        type="number"
+                                                        value={
+                                                            data.courier_city_id
+                                                        }
+                                                        onChange={(event) =>
+                                                            setData(
+                                                                "courier_city_id",
+                                                                event.target
+                                                                    .value,
+                                                            )
+                                                        }
+                                                        className="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900"
+                                                    />
+                                                    {errors.courier_city_id && (
+                                                        <span className="text-red-600">
+                                                            {
+                                                                errors.courier_city_id
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </label>
+                                                <label className="block text-xs font-semibold">
+                                                    Pathao zone ID
+                                                    <input
+                                                        type="number"
+                                                        value={
+                                                            data.courier_zone_id
+                                                        }
+                                                        onChange={(event) =>
+                                                            setData(
+                                                                "courier_zone_id",
+                                                                event.target
+                                                                    .value,
+                                                            )
+                                                        }
+                                                        className="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900"
+                                                    />
+                                                    {errors.courier_zone_id && (
+                                                        <span className="text-red-600">
+                                                            {
+                                                                errors.courier_zone_id
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </label>
+                                            </div>
+                                        )}
                                     <label className="block text-xs font-semibold">
                                         Tracking number
                                         <input
@@ -310,6 +396,35 @@ export default function Show({ order }) {
                                 {order.status}
                             </dd>
                         </div>
+                        {order.courier_name && (
+                            <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-900">
+                                <div className="flex justify-between">
+                                    <dt className="text-slate-500">Courier</dt>
+                                    <dd className="font-semibold capitalize">
+                                        {order.courier_name}
+                                    </dd>
+                                </div>
+                                <div className="mt-2 flex justify-between">
+                                    <dt className="text-slate-500">Booking</dt>
+                                    <dd className="font-semibold capitalize">
+                                        {order.courier_booking_status?.replaceAll(
+                                            "_",
+                                            " ",
+                                        ) ?? "Pending"}
+                                    </dd>
+                                </div>
+                                {order.courier_booking_reference && (
+                                    <div className="mt-2 flex justify-between gap-4">
+                                        <dt className="text-slate-500">
+                                            Reference
+                                        </dt>
+                                        <dd className="break-all font-semibold">
+                                            {order.courier_booking_reference}
+                                        </dd>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                         <div className="flex justify-between">
                             <dt className="text-slate-500">Payment</dt>
                             <dd className="font-semibold capitalize">
