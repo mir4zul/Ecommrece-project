@@ -1,6 +1,7 @@
 import { router } from "@inertiajs/react";
 import { StarIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
     clearCompareProducts,
     getCompareProducts,
@@ -50,7 +51,7 @@ export default function CompareModal({ open, onClose, message = "" }) {
 
     if (!open) return null;
 
-    return (
+    return createPortal(
         <div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-3 sm:p-6"
             role="dialog"
@@ -229,6 +230,7 @@ export default function CompareModal({ open, onClose, message = "" }) {
                     </div>
                 )}
             </div>
-        </div>
+        </div>,
+        document.body,
     );
 }
