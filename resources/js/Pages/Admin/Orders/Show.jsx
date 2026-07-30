@@ -1,3 +1,4 @@
+import OrderTimeline from "@/Components/Orders/OrderTimeline";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { ArrowLeftIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
@@ -146,42 +147,16 @@ export default function Show({ order }) {
                         </dl>
                     </article>
 
-                    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                    <article
+                        id="order-timeline"
+                        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+                    >
                         <h2 className="font-bold">Order Timeline</h2>
-                        <div className="mt-5 space-y-5 border-l-2 border-slate-200 pl-5 dark:border-slate-700">
-                            <div className="relative">
-                                <span className="absolute -left-[1.7rem] top-1 size-3 rounded-full bg-blue-500 ring-4 ring-white dark:ring-slate-800" />
-                                <p className="text-sm font-semibold">
-                                    Order placed
-                                </p>
-                                <p className="text-xs text-slate-500">
-                                    {new Date(
-                                        order.ordered_at,
-                                    ).toLocaleString()}
-                                </p>
-                            </div>
-                            {[...(order.histories ?? [])]
-                                .reverse()
-                                .map((history) => (
-                                    <div key={history.id} className="relative">
-                                        <span className="absolute -left-[1.7rem] top-1 size-3 rounded-full bg-red-500 ring-4 ring-white dark:ring-slate-800" />
-                                        <p className="text-sm font-semibold capitalize">
-                                            {history.from_status} →{" "}
-                                            {history.to_status}
-                                        </p>
-                                        <p className="text-xs text-slate-500">
-                                            {new Date(
-                                                history.created_at,
-                                            ).toLocaleString()}{" "}
-                                            by {history.user?.name ?? "System"}
-                                        </p>
-                                        {history.note && (
-                                            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                                                {history.note}
-                                            </p>
-                                        )}
-                                    </div>
-                                ))}
+                        <p className="mt-1 text-sm text-slate-500">
+                            Confirmation থেকে delivery পর্যন্ত complete progress
+                        </p>
+                        <div className="mt-6">
+                            <OrderTimeline order={order} />
                         </div>
                     </article>
                 </section>

@@ -1,5 +1,6 @@
 import Footer from "@/Components/Footer";
 import Header from "@/Components/Header";
+import OrderTimeline from "@/Components/Orders/OrderTimeline";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
@@ -8,11 +9,9 @@ const money = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
 });
-const steps = ["pending", "confirmed", "processing", "shipped", "delivered"];
 
 export default function MyOrderDetails({ order, carts = [], wishlists = [] }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const currentStep = steps.indexOf(order.status);
     return (
         <>
             <Head title={order.order_number} />
@@ -32,7 +31,10 @@ export default function MyOrderDetails({ order, carts = [], wishlists = [] }) {
                     >
                         <ArrowLeftIcon className="size-4" /> My Orders
                     </Link>
-                    <div className="mt-5 flex flex-col justify-between gap-4 sm:flex-row">
+                    <div
+                        id="order-info"
+                        className="scroll-mt-24 mt-5 flex flex-col justify-between gap-4 sm:flex-row"
+                    >
                         <div>
                             <p className="text-sm text-gray-500">
                                 Order number
@@ -48,40 +50,82 @@ export default function MyOrderDetails({ order, carts = [], wishlists = [] }) {
                             </p>
                         </div>
                     </div>
-                    <section className="mt-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7">
-                        <h2 className="font-bold">Order Tracking</h2>
-                        {order.status === "cancelled" ? (
-                            <div className="mt-5 rounded-xl bg-red-100 p-4 font-semibold text-red-700">
-                                This order was cancelled.
-                            </div>
-                        ) : (
-                            <div className="mt-8 grid grid-cols-5 gap-1">
-                                {steps.map((step, index) => (
-                                    <div key={step} className="text-center">
-                                        <div
-                                            className={`mx-auto size-5 rounded-full border-4 ${index <= currentStep || order.status === "completed" ? "border-red-600 bg-red-600" : "border-gray-300 bg-white"}`}
-                                        />
-                                        <div
-                                            className={`mt-2 h-1 ${index < currentStep ? "bg-red-600" : "bg-gray-200"}`}
-                                        />
-                                        <p className="mt-2 text-[10px] font-semibold capitalize sm:text-xs">
-                                            {step}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                        {order.tracking_number && (
-                            <div className="mt-6 rounded-xl bg-blue-50 p-4 text-sm text-blue-800">
-                                <strong>Courier:</strong> {order.courier_name}
-                                <br />
-                                <strong>Tracking:</strong>{" "}
-                                {order.tracking_number}
+                    <nav className="sticky top-0 z-20 mt-8 overflow-x-auto rounded-xl border border-gray-200 bg-white/95 px-3 shadow-sm backdrop-blur">
+                        <div className="flex min-w-max items-center gap-1 py-2 text-sm font-semibold">
+                            <a
+                                href="#order-info"
+                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
+                            >
+                                Order Info
+                            </a>
+                            <a
+                                href="#order-timeline"
+                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
+                            >
+                                Order Timeline
+                            </a>
+                            <a
+                                href="#order-products"
+                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
+                            >
+                                Products
+                            </a>
+                            <a
+                                href="#delivery-payment"
+                                className="rounded-lg px-4 py-2 hover:bg-red-50 hover:text-red-600"
+                            >
+                                Delivery & Payment
+                            </a>
+                        </div>
+                    </nav>
+                    <section
+                        id="order-timeline"
+                        className="scroll-mt-24 mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7"
+                    >
+                        <h2 className="font-bold">Order Timeline</h2>
+                        <p className="mt-1 text-sm text-gray-500">
+                            Confirmation থেকে delivery পর্যন্ত live progress
+                        </p>
+                        <div className="mt-7">
+                            <OrderTimeline order={order} />
+                        </div>
+                        {order.courier_name && (
+                            <div className="mt-6 grid gap-3 rounded-xl bg-blue-50 p-4 text-sm text-blue-900 sm:grid-cols-3">
+                                <p>
+                                    <span className="block text-xs text-blue-600">
+                                        Courier
+                                    </span>
+                                    <strong className="capitalize">
+                                        {order.courier_name}
+                                    </strong>
+                                </p>
+                                <p>
+                                    <span className="block text-xs text-blue-600">
+                                        Booking status
+                                    </span>
+                                    <strong className="capitalize">
+                                        {order.courier_booking_status?.replaceAll(
+                                            "_",
+                                            " ",
+                                        ) ?? "Pending"}
+                                    </strong>
+                                </p>
+                                <p>
+                                    <span className="block text-xs text-blue-600">
+                                        Tracking
+                                    </span>
+                                    <strong>
+                                        {order.tracking_number ?? "Waiting"}
+                                    </strong>
+                                </p>
                             </div>
                         )}
                     </section>
                     <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_22rem]">
-                        <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+                        <section
+                            id="order-products"
+                            className="scroll-mt-24 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+                        >
                             <h2 className="border-b p-5 font-bold">Products</h2>
                             <div className="divide-y">
                                 {order.items.map((item) => (
@@ -114,7 +158,10 @@ export default function MyOrderDetails({ order, carts = [], wishlists = [] }) {
                                 ))}
                             </div>
                         </section>
-                        <aside className="h-fit rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                        <aside
+                            id="delivery-payment"
+                            className="scroll-mt-24 h-fit rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+                        >
                             <h2 className="font-bold">Summary</h2>
                             <dl className="mt-4 space-y-3 text-sm">
                                 <div className="flex justify-between">
@@ -153,40 +200,6 @@ export default function MyOrderDetails({ order, carts = [], wishlists = [] }) {
                             </p>
                         </aside>
                     </div>
-                    <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-                        <h2 className="font-bold">Status History</h2>
-                        <div className="mt-5 space-y-4 border-l-2 border-gray-200 pl-5">
-                            <div>
-                                <p className="text-sm font-semibold">
-                                    Order placed
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                    {new Date(
-                                        order.ordered_at,
-                                    ).toLocaleString()}
-                                </p>
-                            </div>
-                            {[...(order.histories ?? [])]
-                                .reverse()
-                                .map((history) => (
-                                    <div key={history.id}>
-                                        <p className="text-sm font-semibold capitalize">
-                                            {history.to_status}
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                            {new Date(
-                                                history.created_at,
-                                            ).toLocaleString()}
-                                        </p>
-                                        {history.note && (
-                                            <p className="mt-1 text-sm text-gray-600">
-                                                {history.note}
-                                            </p>
-                                        )}
-                                    </div>
-                                ))}
-                        </div>
-                    </section>
                 </main>
                 <Footer />
             </div>
