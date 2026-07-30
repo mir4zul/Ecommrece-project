@@ -1,13 +1,19 @@
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import clsx from "clsx";
 
-export default function CartDropDown({ dropdownOpen, carts }) {
+const getCartUnitPrice = (cart) => {
+    const price = Number(cart.price) || 0;
+    const discount = Number(cart.discount) || 0;
+
+    return price - (price * discount) / 100;
+};
+
+export default function CartDropDown({ dropdownOpen, carts = [] }) {
     const { delete: destroy } = useForm();
 
     const deleteCart = (id) => {
         destroy(route("remove-from-cart", id));
-        console.log("delete cart", id);
     };
 
     return (
@@ -52,14 +58,7 @@ export default function CartDropDown({ dropdownOpen, carts }) {
                                         </h3>
                                         <p className="text-sm text-gray-600 dark:text-gray-500">
                                             {cart.quantity} x $
-                                            {cart.discount
-                                                ? (
-                                                      cart.price -
-                                                      (cart.price *
-                                                          cart.discount) /
-                                                          100
-                                                  ).toFixed(2)
-                                                : price.toFixed(2)}
+                                            {getCartUnitPrice(cart).toFixed(2)}
                                         </p>
                                     </div>
                                 </div>
@@ -83,14 +82,8 @@ export default function CartDropDown({ dropdownOpen, carts }) {
                                     .reduce(
                                         (total, cart) =>
                                             total +
-                                            (cart.discount
-                                                ? (
-                                                      cart.price -
-                                                      (cart.price *
-                                                          cart.discount) /
-                                                          100
-                                                  ).toFixed(2) * cart.quantity
-                                                : cart.price * cart.quantity),
+                                            getCartUnitPrice(cart) *
+                                                (Number(cart.quantity) || 0),
                                         0,
                                     )
                                     .toFixed(2)}
@@ -98,12 +91,18 @@ export default function CartDropDown({ dropdownOpen, carts }) {
                         </div>
 
                         <div className="flex flex-col min-[380px]:flex-row gap-2 justify-between p-4">
-                            <button className="bg-gray-500 text-white px-4 sm:px-8 py-2 hover:bg-gray-600">
+                            <Link
+                                href={route("cart.index")}
+                                className="bg-gray-500 px-4 py-2 text-center text-white hover:bg-gray-600 sm:px-8"
+                            >
                                 View Cart
-                            </button>
-                            <button className="bg-red-500 text-white px-4 sm:px-8 py-2 hover:bg-red-600">
+                            </Link>
+                            <Link
+                                href={route("checkout.index")}
+                                className="bg-red-500 px-4 py-2 text-center text-white hover:bg-red-600 sm:px-8"
+                            >
                                 Checkout
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 )}

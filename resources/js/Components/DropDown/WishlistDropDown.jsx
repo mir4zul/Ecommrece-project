@@ -4,20 +4,15 @@ import { useForm } from "@inertiajs/react";
 
 export default function WishlistDropDown({ dropdownOpen, wishlists }) {
     const { delete: destroy, get } = useForm();
-    console.log("wishlists", wishlists);
 
     // Remove wishlist item
     const removeFromWishlist = (id) => {
         destroy(route("remove-from-wishlist", id));
-        // Optionally, you can also update the UI or show a notification
-        console.log("remove from wishlist", id);
     };
 
     // View Product
     const viewProduct = (id) => {
         get(route("product.show", id));
-        // Optionally, you can also update the UI or show a notification
-        console.log("view product", id);
     };
 
     return (

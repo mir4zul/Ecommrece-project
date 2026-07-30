@@ -16,10 +16,13 @@ const categories = [
     "Uncategorized",
 ];
 
-export default function ProductDetails({ product }) {
+export default function ProductDetails({ product, wishlists = [] }) {
     const [quantity, setQuantity] = useState(1);
     const [compareOpen, setCompareOpen] = useState(false);
     const [compareMessage, setCompareMessage] = useState("");
+    const isWishlisted = wishlists.some(
+        (item) => Number(item.product_id) === Number(product.id),
+    );
     const { data, setData, post } = useForm({
         product_id: product.id,
         quantity: quantity,
@@ -35,6 +38,10 @@ export default function ProductDetails({ product }) {
 
         // Reset quantity to 1 after adding to cart
         setQuantity(1);
+    };
+
+    const addToWishlist = () => {
+        post(route("add-to-wishlist"), { preserveScroll: true });
     };
 
     const compareProduct = () => {
@@ -107,10 +114,26 @@ export default function ProductDetails({ product }) {
                         </div>
 
                         <div className="mt-4 flex flex-wrap items-center gap-4">
-                            <div className="flex items-center gap-1 text-red-600">
-                                <HeartIcon size={20} />
-                                <p className="text-sm">Wishlist</p>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={addToWishlist}
+                                className={`flex items-center gap-1 transition ${
+                                    isWishlisted
+                                        ? "text-red-600"
+                                        : "text-gray-600 hover:text-red-600"
+                                }`}
+                                aria-pressed={isWishlisted}
+                            >
+                                <HeartIcon
+                                    size={20}
+                                    fill={
+                                        isWishlisted ? "currentColor" : "none"
+                                    }
+                                />
+                                <p className="text-sm">
+                                    {isWishlisted ? "Wishlisted" : "Wishlist"}
+                                </p>
+                            </button>
 
                             <button
                                 type="button"

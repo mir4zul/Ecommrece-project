@@ -9,50 +9,43 @@ use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
-    /**
-     * Add to wishlist
-     */
     public function addToWishlist(Request $request)
     {
-        // dd($request->all());
-        if (!Auth::check()) {
-            return redirect('/login')->with('message', 'Please login to add products to wishlist');
+        if (! Auth::check()) {
+            return to_route('login')->with('error', 'Please login to manage your wishlist.');
         }
-        $request->validate([
-            'product_id' => 'required|integer|exists:products,id',
+
+        $data = $request->validate([
+            'product_id' => ['required', 'integer', 'exists:products,id'],
         ]);
-
-        $product = Product::find($request->product_id);
-
-        $wishlist = Wishlist::where('user_id', Auth::id())
-            ->where('product_id', $request->product_id)
+        $wishlist = Wishlist::query()
+            ->where('user_id', Auth::id())
+            ->where('product_id', $data['product_id'])
             ->first();
 
         if ($wishlist) {
-            return redirect()->back()->with('message', 'Product already in wishlist');
+            $wishlist->delete();
+
+            return back()->with('success', 'Product removed from wishlist.');
         }
 
-        Wishlist::create([
+        $product = Product::query()->findOrFail($data['product_id']);
+        Wishlist::query()->create([
             'user_id' => Auth::id(),
             'product_id' => $product->id,
             'name' => $product->name,
             'image' => $product->image,
             'price' => $product->price,
         ]);
-        return redirect()->back()->with('message', 'Product added to wishlist successfully');
-    }
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function removeFromWishlist(Request $request)
-    {
-        $wishlist = Wishlist::find($request->id);
 
-        if ($wishlist) {
-            $wishlist->delete();
-            return redirect()->back()->with('message', 'Product removed from favorites successfully');
-        } else {
-            return redirect()->back()->with('message', 'Product not found in favorites');
-        }
+        return back()->with('success', 'Product added to wishlist.');
+    }
+
+    public function removeFromWishlist(Wishlist $wishlist)
+    {
+        abort_unless($wishlist->user_id === Auth::id(), 403);
+        $wishlist->delete();
+
+        return back()->with('success', 'Product removed from wishlist.');
     }
 }

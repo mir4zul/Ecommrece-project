@@ -29,7 +29,10 @@ const ProductCard = ({
 }) => {
     const [compareOpen, setCompareOpen] = useState(false);
     const [compareMessage, setCompareMessage] = useState("");
-    const { post } = useForm({
+    const isWishlisted = wishlists?.some(
+        (item) => Number(item.product_id) === Number(id),
+    );
+    const { post, processing } = useForm({
         product_id: id,
         quantity: 1,
     });
@@ -96,11 +99,19 @@ const ProductCard = ({
 
                     {/* Wishlist or Compare */}
                     <div className="absolute right-2 top-2 translate-x-0 space-y-1 bg-white p-2 opacity-100 shadow transition-all duration-300 ease-in-out sm:translate-x-3 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100">
-                        <div
+                        <button
+                            type="button"
                             onClick={addToWishlist}
-                            className="relative group/wishlist cursor-pointer"
+                            disabled={processing}
+                            aria-pressed={Boolean(isWishlisted)}
+                            aria-label={
+                                isWishlisted
+                                    ? "Remove from wishlist"
+                                    : "Add to wishlist"
+                            }
+                            className="relative block group/wishlist cursor-pointer disabled:opacity-50"
                         >
-                            {wishlists?.some((item) => item.id === id) ? (
+                            {isWishlisted ? (
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -113,10 +124,14 @@ const ProductCard = ({
                                 <HeartIcon className="w-5 h-5 group-hover/wishlist:text-red-500" />
                             )}
                             <div className="absolute right-full mr-3.5 top-1/2 transform -translate-y-1/2 group-hover/wishlist:block hidden bg-black text-white text-sm px-3 py-1.5 shadow-lg transition-opacity">
-                                <p>Wishlist</p>
+                                <p>
+                                    {isWishlisted
+                                        ? "Remove Wishlist"
+                                        : "Add Wishlist"}
+                                </p>
                                 <div className="absolute top-1/2 transform -translate-y-1/2 h-2 w-2 bg-black rotate-45 -right-1"></div>
                             </div>
-                        </div>
+                        </button>
                         <hr />
                         <button
                             type="button"
