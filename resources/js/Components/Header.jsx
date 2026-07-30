@@ -8,7 +8,7 @@ import {
     SunIcon,
     XMarkIcon,
 } from "@heroicons/react/24/outline";
-import logo from "../assets/boria_1.png";
+import logo from "../assets/shoplio-logo.svg";
 import { Link, router, usePage } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 import DropDown from "./DropDown/ShopDropDown";
@@ -193,7 +193,7 @@ export default function Header({
                     >
                         <span className="sr-only">Your Company</span>
                         <img
-                            alt="Boria home"
+                            alt="Shoplio home"
                             src={logo}
                             className={`w-auto transition-all duration-300 ${isScrolled ? "h-5 lg:h-6" : "h-7 lg:h-8"}`}
                         />
@@ -415,7 +415,7 @@ export default function Header({
                         >
                             <span className="sr-only">Your Company</span>
                             <img
-                                alt="Boria home"
+                                alt="Shoplio home"
                                 src={logo}
                                 className="h-8 w-auto"
                             />

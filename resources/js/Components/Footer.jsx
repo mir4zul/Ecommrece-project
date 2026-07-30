@@ -1,4 +1,4 @@
-import logo from "@/assets/boria_1.png";
+import logo from "@/assets/shoplio-logo.svg";
 import {
     FaFacebook,
     FaInstagram,
@@ -68,7 +68,7 @@ export default function Footer() {
                         <img
                             className="mx-auto w-32 rounded-lg bg-slate-900/90 px-4 py-3 dark:bg-white/10"
                             src={logo}
-                            alt="Boria"
+                            alt="Shoplio"
                         />
                         <div className="mt-6 space-y-2 text-sm leading-6">
                             <p>4710–4890 Breckinridge St, Fayetteville</p>
@@ -136,7 +136,8 @@ export default function Footer() {
 
                 <div className="flex flex-col gap-2 border-t border-slate-200 py-5 text-center text-xs sm:flex-row sm:items-center sm:justify-between sm:text-left dark:border-slate-800">
                     <p>
-                        © {new Date().getFullYear()} Boria. All rights reserved.
+                        © {new Date().getFullYear()} Shoplio. All rights
+                        reserved.
                     </p>
                     <p>Secure shopping · Fast delivery · Easy returns</p>
                 </div>
