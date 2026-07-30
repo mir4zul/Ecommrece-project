@@ -11,7 +11,7 @@ export default function ShowProduct({ product, products, carts, wishlists }) {
 
     return (
         <div className="bg-slate-900">
-            <Head title="Blog" />
+            <Head title={product.name} />
 
             <Header
                 mobileMenuOpen={mobileMenuOpen}
@@ -20,11 +20,7 @@ export default function ShowProduct({ product, products, carts, wishlists }) {
                 wishlists={wishlists}
             />
 
-            <div className="py-40 max-w-3xl mx-auto">
-                <h1 className="text-4xl font-open uppercase text-gray-50 tracking-wider">
-                    Sit voluptatem rhoncus
-                </h1>
-            </div>
+            <div className="h-[85px] bg-slate-900" />
 
             <ProductDetails product={product} wishlists={wishlists} />
             <BoughtTogether />
