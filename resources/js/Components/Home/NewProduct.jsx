@@ -1,5 +1,5 @@
 import ProductCard from "./ProductCard";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 
 export default function NewProduct({ products = [], wishlists = [] }) {
     const { get } = useForm();
@@ -17,7 +17,12 @@ export default function NewProduct({ products = [], wishlists = [] }) {
                 <h3 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-gray-800">
                     the New arrivals
                 </h3>
-                <p className="mt-2 text-gray-600 text-sm">Shop All Products</p>
+                <Link
+                    href={route("products.shopLeftSidebar")}
+                    className="mt-2 inline-block text-sm text-gray-600 transition hover:text-red-600 hover:underline"
+                >
+                    Shop All Products
+                </Link>
             </div>
             <div className="grid auto-rows-fr grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 sm:gap-6 mt-8 sm:mt-10">
                 {newProducts.map((product) => (

@@ -12,9 +12,11 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'category',
         'price',
         'discount_price',
         'image',
+        'images',
         'description',
         'user_id',
         'stock',
@@ -27,6 +29,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'images' => 'array',
             'discount_price' => 'integer',
             'rating' => 'integer',
             'is_new' => 'boolean',

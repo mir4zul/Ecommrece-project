@@ -1,9 +1,43 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ZoomIn, ZoomOut } from "lucide-react";
 
 export default function Product({ product }) {
     const [isZoomed, setIsZoomed] = useState(false);
     const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+    const galleryImages = useMemo(() => {
+        let additionalImages = product.images ?? [];
+
+        if (typeof additionalImages === "string") {
+            try {
+                additionalImages = JSON.parse(additionalImages);
+            } catch {
+                additionalImages = [additionalImages];
+            }
+        }
+
+        const availableImages = [
+            product.image,
+            ...(Array.isArray(additionalImages) ? additionalImages : []),
+        ].filter(Boolean);
+        const images = [...new Set(availableImages)];
+
+        if (images.length === 0) return [];
+
+        const sourceImages = [...images];
+        while (images.length < 4) {
+            images.push(sourceImages[images.length % sourceImages.length]);
+        }
+
+        return images;
+    }, [product.image, product.images]);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const selectedImage = galleryImages[selectedImageIndex] ?? product.image;
+
+    useEffect(() => {
+        setSelectedImageIndex(0);
+        setIsZoomed(false);
+        setZoomPosition({ x: 50, y: 50 });
+    }, [galleryImages, product.image]);
 
     const updateZoomPosition = (event) => {
         const { left, top, width, height } =
@@ -67,7 +101,7 @@ export default function Product({ product }) {
                 onKeyDown={toggleKeyboardZoom}
             >
                 <img
-                    src={product.image}
+                    src={selectedImage}
                     alt={product.name}
                     draggable="false"
                     className="h-full w-full select-none object-contain transition-transform duration-200 ease-out"
@@ -92,26 +126,31 @@ export default function Product({ product }) {
                 )}
             </div>
 
-            <div className="mt-4 flex justify-center">
-                <button
-                    type="button"
-                    onClick={() => {
-                        setZoomPosition({ x: 50, y: 50 });
-                        setIsZoomed((current) => !current);
-                    }}
-                    className={`h-20 w-20 overflow-hidden rounded-md border-2 bg-gray-100 p-1 transition sm:h-24 sm:w-24 ${
-                        isZoomed
-                            ? "border-red-500"
-                            : "border-gray-200 hover:border-red-400"
-                    }`}
-                    aria-label="Toggle product image zoom"
-                >
-                    <img
-                        src={product.image}
-                        alt=""
-                        className="h-full w-full object-cover"
-                    />
-                </button>
+            <div className="mt-4 grid grid-cols-4 gap-2 sm:gap-3">
+                {galleryImages.map((image, index) => (
+                    <button
+                        key={`${image}-${index}`}
+                        type="button"
+                        onClick={() => {
+                            setSelectedImageIndex(index);
+                            setIsZoomed(false);
+                            setZoomPosition({ x: 50, y: 50 });
+                        }}
+                        className={`aspect-square min-w-0 overflow-hidden rounded-md border-2 bg-gray-100 p-1 transition ${
+                            selectedImageIndex === index
+                                ? "border-red-500"
+                                : "border-gray-200 hover:border-red-400"
+                        }`}
+                        aria-label={`View product image ${index + 1}`}
+                        aria-pressed={selectedImageIndex === index}
+                    >
+                        <img
+                            src={image}
+                            alt=""
+                            className="h-full w-full object-cover"
+                        />
+                    </button>
+                ))}
             </div>
         </div>
     );

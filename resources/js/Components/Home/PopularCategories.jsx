@@ -4,6 +4,7 @@ import CategoriesImage3 from "@/assets/categories-3.jpg";
 import CategoriesImage4 from "@/assets/categories-4.jpg";
 import PrimaryButton from "../PrimaryButton";
 import { motion } from "framer-motion";
+import { Link } from "@inertiajs/react";
 import { animations } from "@/utils/animationUtils";
 
 const data = [
@@ -44,7 +45,12 @@ export default function PopularCategories() {
                 <h1 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-gray-800">
                     Popular Categories
                 </h1>
-                <p className="mt-4 text-gray-600">Shop All Products</p>
+                <Link
+                    href={route("products.shopLeftSidebar")}
+                    className="mt-4 inline-block text-gray-600 transition hover:text-red-600 hover:underline"
+                >
+                    Shop All Products
+                </Link>
             </div>
 
             <div className="mt-8 sm:mt-12 grid grid-cols-1 min-[420px]:grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 xl:gap-8">

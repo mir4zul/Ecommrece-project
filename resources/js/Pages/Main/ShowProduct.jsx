@@ -26,7 +26,7 @@ export default function ShowProduct({ product, products, carts, wishlists }) {
                 </h1>
             </div>
 
-            <ProductDetails product={product} />
+            <ProductDetails product={product} wishlists={wishlists} />
             <BoughtTogether />
             <RelatedProducts
                 products={products}
