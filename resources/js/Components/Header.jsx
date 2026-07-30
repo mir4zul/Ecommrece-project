@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import logo from "../assets/boria_1.png";
 import { Link } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DropDown from "./DropDown/ShopDropDown";
 import PageDropDown from "./DropDown/PageDropDown";
 import CartDropDown from "./DropDown/CartDropDown";
@@ -33,9 +33,35 @@ export default function Header({
     wishlists,
 }) {
     const [dropdownOpen, setDropdownOpen] = useState("");
+    const [headerVisible, setHeaderVisible] = useState(true);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const lastScrollY = useRef(0);
     const [isDark, setIsDark] = useState(() =>
         document.documentElement.classList.contains("dark"),
     );
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = Math.max(window.scrollY, 0);
+            setIsScrolled(currentScrollY > 12);
+
+            if (mobileMenuOpen || currentScrollY < 80) {
+                setHeaderVisible(true);
+            } else if (currentScrollY > lastScrollY.current + 6) {
+                setHeaderVisible(false);
+                setDropdownOpen("");
+            } else if (currentScrollY < lastScrollY.current - 6) {
+                setHeaderVisible(true);
+            }
+
+            lastScrollY.current = currentScrollY;
+        };
+
+        lastScrollY.current = Math.max(window.scrollY, 0);
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [mobileMenuOpen]);
+
     const cartItems = Array.isArray(carts) ? carts : [];
     const wishlistItems = Array.isArray(wishlists) ? wishlists : [];
 
@@ -51,10 +77,18 @@ export default function Header({
     };
 
     return (
-        <header className="absolute inset-x-0 top-0 z-50 max-w-screen-2xl px-4 sm:px-6 lg:px-8 mx-auto">
+        <header
+            className={`fixed inset-x-0 top-0 z-50 w-full px-4 transition-all duration-300 ease-out sm:px-6 lg:px-8 ${
+                headerVisible ? "translate-y-0" : "-translate-y-full"
+            } ${
+                isScrolled
+                    ? "bg-slate-900/95 shadow-lg shadow-slate-950/20 backdrop-blur-md"
+                    : "bg-transparent"
+            }`}
+        >
             <nav
                 aria-label="Global"
-                className="flex items-center max-lg:flex-row-reverse justify-between"
+                className={`mx-auto flex max-w-screen-2xl items-center justify-between transition-all duration-300 max-lg:flex-row-reverse ${isScrolled ? "min-h-[60px]" : "min-h-[85px]"}`}
             >
                 <div className="lg:hidden flex gap-4 items-center">
                     <button
@@ -100,7 +134,7 @@ export default function Header({
                         onMouseOut={() => {
                             setDropdownOpen("");
                         }}
-                        className="relative py-5"
+                        className={`relative transition-all ${isScrolled ? "py-3" : "py-5"}`}
                     >
                         <div className="relative">
                             <ShoppingCartIcon
@@ -132,7 +166,7 @@ export default function Header({
                         <img
                             alt="Boria home"
                             src={logo}
-                            className="h-7 w-auto lg:h-8"
+                            className={`w-auto transition-all duration-300 ${isScrolled ? "h-6 lg:h-7" : "h-7 lg:h-8"}`}
                         />
                     </Link>
 
@@ -156,7 +190,7 @@ export default function Header({
                             >
                                 <Link
                                     href={item.href}
-                                    className="text-sm font-bold text-white flex py-4 lg:py-8"
+                                    className={`flex text-sm font-bold text-white transition-all ${isScrolled ? "py-4" : "py-4 lg:py-8"}`}
                                 >
                                     {item.name}
                                     {item.down && (
