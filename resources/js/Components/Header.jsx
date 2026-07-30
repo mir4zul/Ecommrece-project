@@ -88,7 +88,7 @@ export default function Header({
         >
             <nav
                 aria-label="Global"
-                className={`mx-auto flex max-w-screen-2xl items-center justify-between transition-all duration-300 max-lg:flex-row-reverse ${isScrolled ? "min-h-[52px]" : "min-h-[85px]"}`}
+                className={`mx-auto flex max-w-screen-2xl items-center justify-between transition-all duration-300 max-lg:flex-row-reverse ${isScrolled ? "min-h-[40px]" : "min-h-[85px]"}`}
             >
                 <div className="lg:hidden flex gap-4 items-center">
                     <button
@@ -134,7 +134,7 @@ export default function Header({
                         onMouseOut={() => {
                             setDropdownOpen("");
                         }}
-                        className={`relative transition-all ${isScrolled ? "py-2" : "py-5"}`}
+                        className={`relative transition-all ${isScrolled ? "py-1" : "py-5"}`}
                     >
                         <div className="relative">
                             <ShoppingCartIcon
@@ -190,7 +190,7 @@ export default function Header({
                             >
                                 <Link
                                     href={item.href}
-                                    className={`flex text-sm font-bold text-white transition-all ${isScrolled ? "py-3" : "py-4 lg:py-8"}`}
+                                    className={`flex text-sm font-bold text-white transition-all ${isScrolled ? "py-2" : "py-4 lg:py-8"}`}
                                 >
                                     {item.name}
                                     {item.down && (
