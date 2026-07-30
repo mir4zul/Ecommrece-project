@@ -77,7 +77,7 @@ export default function CompareModal({ open, onClose, message = "" }) {
                     <button
                         type="button"
                         onClick={onClose}
-                        className="rounded-full p-2 text-gray-600 transition hover:bg-gray-100 hover:text-red-600"
+                        className="rounded-full border border-transparent p-2 text-gray-600 transition hover:bg-gray-100 hover:text-red-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-red-500 dark:hover:bg-red-950 dark:hover:text-red-400"
                         aria-label="Close comparison"
                     >
                         <XMarkIcon className="size-6" />
@@ -129,7 +129,7 @@ export default function CompareModal({ open, onClose, message = "" }) {
                                                     ),
                                                 )
                                             }
-                                            className="absolute right-2 top-2 rounded-full bg-white/95 p-1.5 text-gray-700 shadow hover:text-red-600"
+                                            className="absolute right-2 top-2 rounded-full border border-gray-200 bg-white/95 p-1.5 text-gray-700 shadow transition hover:border-red-400 hover:text-red-600 dark:border-slate-600 dark:bg-slate-900/95 dark:text-white dark:hover:border-red-500 dark:hover:bg-red-950 dark:hover:text-red-400"
                                             aria-label={`Remove ${product.name}`}
                                         >
                                             <XMarkIcon className="size-5" />
