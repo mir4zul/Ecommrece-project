@@ -9,7 +9,7 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../assets/boria_1.png";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 import DropDown from "./DropDown/ShopDropDown";
 import PageDropDown from "./DropDown/PageDropDown";
@@ -33,6 +33,9 @@ export default function Header({
     wishlists,
 }) {
     const [dropdownOpen, setDropdownOpen] = useState("");
+    const [searchQuery, setSearchQuery] = useState(
+        () => new URLSearchParams(window.location.search).get("search") ?? "",
+    );
     const [headerVisible, setHeaderVisible] = useState(true);
     const [isScrolled, setIsScrolled] = useState(false);
     const lastScrollY = useRef(0);
@@ -64,6 +67,12 @@ export default function Header({
 
     const cartItems = Array.isArray(carts) ? carts : [];
     const wishlistItems = Array.isArray(wishlists) ? wishlists : [];
+
+    const submitSearch = (event) => {
+        event.preventDefault();
+        const search = searchQuery.trim();
+        router.get(route("products.shopLeftSidebar"), search ? { search } : {});
+    };
 
     const toggleTheme = () => {
         const nextThemeIsDark = !isDark;
@@ -242,20 +251,29 @@ export default function Header({
                 </div>
 
                 <div className="hidden min-w-0 lg:flex lg:flex-1 lg:justify-end lg:gap-6 xl:gap-12 2xl:gap-20">
-                    <div className="flex min-w-0 max-w-xs flex-1 items-center gap-1">
-                        <label htmlFor="search">
-                            <MagnifyingGlassIcon
-                                aria-hidden="true"
-                                className="size-6 text-gray-200 font-bold hover:text-red-600 cursor-pointer"
-                            />
-                        </label>
+                    <form
+                        onSubmit={submitSearch}
+                        role="search"
+                        className="flex min-w-0 max-w-xs flex-1 items-center gap-1"
+                    >
+                        <button
+                            type="submit"
+                            className="rounded-full p-1 text-gray-200 transition hover:bg-white/10 hover:text-red-500"
+                            aria-label="Search products"
+                        >
+                            <MagnifyingGlassIcon className="size-6" />
+                        </button>
                         <input
-                            type="text"
-                            id="search"
+                            type="search"
+                            id="header-product-search"
+                            value={searchQuery}
+                            onChange={(event) =>
+                                setSearchQuery(event.target.value)
+                            }
                             placeholder="Search for products..."
-                            className="w-full px-3 py-1.5 bg-transparent text-gray-200 placeholder-gray-200 placeholder:text-sm border-none rounded-md focus:outline-none focus:ring-red-600 focus:border-red-600"
+                            className="w-full rounded-md border-none bg-transparent px-3 py-1.5 text-gray-200 placeholder:text-sm placeholder:text-gray-200 focus:border-red-600 focus:outline-none focus:ring-red-600"
                         />
-                    </div>
+                    </form>
 
                     <div className="flex gap-4 items-center">
                         <button

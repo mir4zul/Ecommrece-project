@@ -108,10 +108,15 @@ class ProductController extends Controller
         return to_route('admin.products.index')->with('success', 'Product deleted successfully.');
     }
 
-    public function shopLeftSidebar()
+    public function shopLeftSidebar(Request $request)
     {
+        $search = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+        ])['search'] ?? '';
+
         return inertia('Main/ShopLeftSidebar', [
             'products' => Product::query()->get(),
+            'initialSearch' => $search,
             'carts' => $this->getUserCart(),
             'wishlists' => $this->getUserWishlist(),
         ]);

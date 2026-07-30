@@ -16,10 +16,15 @@ const getSalePrice = (product) => {
     return price - (price * discount) / 100;
 };
 
-export default function ShopLeftSidebar({ products = [], carts, wishlists }) {
+export default function ShopLeftSidebar({
+    products = [],
+    carts,
+    wishlists,
+    initialSearch = "",
+}) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [filtersOpen, setFiltersOpen] = useState(false);
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState(initialSearch);
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [maxPrice, setMaxPrice] = useState(() =>
         Math.ceil(Math.max(...products.map(getSalePrice), 0)),
