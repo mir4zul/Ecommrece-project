@@ -1,120 +1,205 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import InputError from "@/Components/InputError";
+import GuestLayout from "@/Layouts/GuestLayout";
+import {
+    ArrowRightIcon,
+    EnvelopeIcon,
+    EyeIcon,
+    EyeSlashIcon,
+    LockClosedIcon,
+    UserIcon,
+} from "@heroicons/react/24/outline";
+import { Head, Link, useForm } from "@inertiajs/react";
+import { useState } from "react";
 
 export default function Register() {
+    const [showPassword, setShowPassword] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
     });
 
-    const submit = (e) => {
-        e.preventDefault();
-
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+    const submit = (event) => {
+        event.preventDefault();
+        post(route("register"), {
+            onFinish: () => reset("password", "password_confirmation"),
         });
     };
 
+    const fieldClass =
+        "w-full rounded-xl border-slate-300 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white";
+
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Create account" />
+            <div className="mb-7">
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-red-600 dark:text-red-400">
+                    Join Shoplio
+                </p>
+                <h1 className="mt-2 text-3xl font-black text-slate-900 dark:text-white">
+                    Create your account
+                </h1>
+                <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                    One account for faster checkout, wishlists and live order
+                    tracking.
+                </p>
+            </div>
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className="space-y-4">
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
-
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
-
+                    <label
+                        htmlFor="name"
+                        className="text-sm font-bold text-slate-700 dark:text-slate-200"
+                    >
+                        Full name
+                    </label>
+                    <div className="relative mt-2">
+                        <UserIcon className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
+                        <input
+                            id="name"
+                            value={data.name}
+                            onChange={(event) =>
+                                setData("name", event.target.value)
+                            }
+                            autoComplete="name"
+                            autoFocus
+                            required
+                            placeholder="Your full name"
+                            className={fieldClass}
+                        />
+                    </div>
                     <InputError message={errors.name} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
-
+                <div>
+                    <label
+                        htmlFor="email"
+                        className="text-sm font-bold text-slate-700 dark:text-slate-200"
+                    >
+                        Email address
+                    </label>
+                    <div className="relative mt-2">
+                        <EnvelopeIcon className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
+                        <input
+                            id="email"
+                            type="email"
+                            value={data.email}
+                            onChange={(event) =>
+                                setData("email", event.target.value)
+                            }
+                            autoComplete="username"
+                            required
+                            placeholder="you@example.com"
+                            className={fieldClass}
+                        />
+                    </div>
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <label
+                            htmlFor="password"
+                            className="text-sm font-bold text-slate-700 dark:text-slate-200"
+                        >
+                            Password
+                        </label>
+                        <div className="relative mt-2">
+                            <LockClosedIcon className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
+                            <input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                value={data.password}
+                                onChange={(event) =>
+                                    setData("password", event.target.value)
+                                }
+                                autoComplete="new-password"
+                                required
+                                placeholder="Min. 8 characters"
+                                className={`${fieldClass} pr-11`}
+                            />
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setShowPassword((visible) => !visible)
+                                }
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
+                                aria-label={
+                                    showPassword
+                                        ? "Hide passwords"
+                                        : "Show passwords"
+                                }
+                            >
+                                {showPassword ? (
+                                    <EyeSlashIcon className="size-5" />
+                                ) : (
+                                    <EyeIcon className="size-5" />
+                                )}
+                            </button>
+                        </div>
+                        <InputError
+                            message={errors.password}
+                            className="mt-2"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            htmlFor="password_confirmation"
+                            className="text-sm font-bold text-slate-700 dark:text-slate-200"
+                        >
+                            Confirm password
+                        </label>
+                        <div className="relative mt-2">
+                            <LockClosedIcon className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
+                            <input
+                                id="password_confirmation"
+                                type={showPassword ? "text" : "password"}
+                                value={data.password_confirmation}
+                                onChange={(event) =>
+                                    setData(
+                                        "password_confirmation",
+                                        event.target.value,
+                                    )
+                                }
+                                autoComplete="new-password"
+                                required
+                                placeholder="Repeat password"
+                                className={fieldClass}
+                            />
+                        </div>
+                        <InputError
+                            message={errors.password_confirmation}
+                            className="mt-2"
+                        />
+                    </div>
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
+                <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    By creating an account, you agree to Shoplio&apos;s Terms of
+                    Service and Privacy Policy.
+                </p>
 
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
+                <button
+                    disabled={processing}
+                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                    {processing ? "Creating account..." : "Create account"}
+                    {!processing && (
+                        <ArrowRightIcon className="size-4 transition group-hover:translate-x-1" />
+                    )}
+                </button>
             </form>
+
+            <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                Already have an account?{" "}
+                <Link
+                    href={route("login")}
+                    className="font-bold text-red-600 hover:text-red-700 dark:text-red-400"
+                >
+                    Sign in
+                </Link>
+            </p>
         </GuestLayout>
     );
 }
