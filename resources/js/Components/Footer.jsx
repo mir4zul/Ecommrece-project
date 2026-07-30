@@ -66,7 +66,7 @@ export default function Footer() {
 
                     <section className="text-center sm:col-span-2 lg:col-span-2">
                         <img
-                            className="mx-auto w-32 rounded-lg bg-slate-900/90 px-4 py-3 dark:bg-white/10"
+                            className="mx-auto w-44 rounded-lg bg-slate-900/90 px-4 py-3 dark:bg-white/10"
                             src={logo}
                             alt="Shoplio"
                         />

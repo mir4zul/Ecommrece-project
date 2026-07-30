@@ -195,7 +195,7 @@ export default function Header({
                         <img
                             alt="Shoplio home"
                             src={logo}
-                            className={`w-auto transition-all duration-300 ${isScrolled ? "h-5 lg:h-6" : "h-7 lg:h-8"}`}
+                            className={`w-auto transition-all duration-300 ${isScrolled ? "h-7 lg:h-8" : "h-9 lg:h-10"}`}
                         />
                     </Link>
 
@@ -417,7 +417,7 @@ export default function Header({
                             <img
                                 alt="Shoplio home"
                                 src={logo}
-                                className="h-8 w-auto"
+                                className="h-10 w-auto"
                             />
                         </Link>
                         <button
