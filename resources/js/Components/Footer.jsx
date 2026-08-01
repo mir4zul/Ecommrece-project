@@ -1,4 +1,4 @@
-import logo from "@/assets/shoplio-logo.svg";
+import logo from "@/assets/shophunt-logo.png";
 import {
     FaFacebook,
     FaInstagram,

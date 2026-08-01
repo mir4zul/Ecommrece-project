@@ -1,4 +1,4 @@
-import logo from "@/assets/shoplio-logo.svg";
+import logo from "@/assets/shophunt-logo.png";
 import {
     CheckCircleIcon,
     ShieldCheckIcon,
@@ -27,8 +27,8 @@ export default function GuestLayout({ children }) {
                 <Link href="/" className="relative z-10 inline-flex w-fit">
                     <img
                         src={logo}
-                        alt="Shoplio home"
-                        className="h-12 w-auto"
+                        alt="ShopHunt home"
+                        className="h-20 w-auto"
                     />
                 </Link>
 
@@ -70,11 +70,11 @@ export default function GuestLayout({ children }) {
                         href="/"
                         className="mb-8 flex justify-center lg:hidden"
                     >
-                        <span className="rounded-2xl bg-slate-950 px-5 py-3 shadow-xl">
+                        <span className="rounded-2xl bg-slate-950 px-6 py-4 shadow-xl">
                             <img
                                 src={logo}
-                                alt="Shoplio home"
-                                className="h-10 w-auto"
+                                alt="ShopHunt home"
+                                className="h-16 w-auto"
                             />
                         </span>
                     </Link>
