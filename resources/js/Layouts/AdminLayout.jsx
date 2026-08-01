@@ -14,6 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
+import logo from "@/assets/shophunt-logo.png";
 
 const links = [
     { label: "Dashboard", routeName: "dashboard", icon: Squares2X2Icon },
@@ -81,19 +82,22 @@ export default function AdminLayout({ title, subtitle, actions, children }) {
                     <Link
                         href={route("dashboard")}
                         className="flex items-center gap-3"
+                        aria-label="ShopHunt admin dashboard"
                     >
-                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-red-600 font-black text-white">
-                            B
-                        </span>
-                        {expanded && (
-                            <div className="whitespace-nowrap">
-                                <p className="font-bold text-white">
-                                    Boria Admin
-                                </p>
-                                <p className="text-xs text-slate-400">
-                                    Control center
-                                </p>
-                            </div>
+                        {expanded ? (
+                            <img
+                                src={logo}
+                                alt="ShopHunt admin"
+                                className="h-16 w-auto max-w-[11rem] object-contain"
+                            />
+                        ) : (
+                            <span className="relative block size-12 shrink-0 overflow-hidden rounded-xl">
+                                <img
+                                    src={logo}
+                                    alt="ShopHunt"
+                                    className="absolute left-0 top-0 h-24 w-auto max-w-none -translate-x-[21px] -translate-y-[22px]"
+                                />
+                            </span>
                         )}
                     </Link>
                     <button

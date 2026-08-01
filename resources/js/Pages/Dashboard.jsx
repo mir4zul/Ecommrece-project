@@ -20,6 +20,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
+import logo from "@/assets/shophunt-logo.png";
 
 const sidebarLinks = [
     { label: "Dashboard", href: "dashboard", icon: Squares2X2Icon },
@@ -100,20 +101,23 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                     <Link
                         href={route("dashboard")}
                         className="flex min-w-0 items-center gap-3"
+                        aria-label="ShopHunt admin dashboard"
                     >
-                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-red-600 font-black text-white shadow-lg shadow-red-950/40">
-                            B
-                        </span>
-                        <div
-                            className={`whitespace-nowrap transition-opacity duration-200 ${expanded ? "opacity-100" : "pointer-events-none hidden opacity-0"}`}
-                        >
-                            <p className="font-bold tracking-wide text-white">
-                                Boria Admin
-                            </p>
-                            <p className="text-xs text-slate-400">
-                                Control center
-                            </p>
-                        </div>
+                        {expanded ? (
+                            <img
+                                src={logo}
+                                alt="ShopHunt admin"
+                                className="h-16 w-auto max-w-[11rem] object-contain"
+                            />
+                        ) : (
+                            <span className="relative block size-12 shrink-0 overflow-hidden rounded-xl">
+                                <img
+                                    src={logo}
+                                    alt="ShopHunt"
+                                    className="absolute left-0 top-0 h-24 w-auto max-w-none -translate-x-[21px] -translate-y-[22px]"
+                                />
+                            </span>
+                        )}
                     </Link>
                     <button
                         type="button"
