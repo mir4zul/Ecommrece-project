@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,10 @@ Route::get('/blog', function () {
 Route::get('/test', function () {
     return inertia('Test');
 });
+Route::post('/payments/sslcommerz/success', [SslCommerzPaymentController::class, 'success'])->name('payments.sslcommerz.success');
+Route::post('/payments/sslcommerz/fail', [SslCommerzPaymentController::class, 'fail'])->name('payments.sslcommerz.fail');
+Route::post('/payments/sslcommerz/cancel', [SslCommerzPaymentController::class, 'cancel'])->name('payments.sslcommerz.cancel');
+Route::post('/payments/sslcommerz/ipn', [SslCommerzPaymentController::class, 'ipn'])->name('payments.sslcommerz.ipn');
 
 // Admin routes
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {

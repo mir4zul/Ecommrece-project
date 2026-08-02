@@ -35,6 +35,12 @@ return [
         ],
     ],
 
+    'sslcommerz' => [
+        'store_id' => env('SSLCOMMERZ_STORE_ID'),
+        'store_password' => env('SSLCOMMERZ_STORE_PASSWORD'),
+        'sandbox' => env('SSLCOMMERZ_SANDBOX', true),
+    ],
+
     'pathao' => [
         'base_url' => env('PATHAO_BASE_URL', 'https://api-hermes.pathao.com/aladdin/api/v1'),
         'client_id' => env('PATHAO_CLIENT_ID'),

@@ -6,11 +6,15 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Wishlist;
+use App\Services\Payments\SslCommerzGateway;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Throwable;
 
 class CartController extends Controller
 {
@@ -99,7 +103,7 @@ class CartController extends Controller
             'shipping_address' => ['required', 'string', 'max:1000'],
             'shipping_city' => ['required', 'string', 'max:100'],
             'shipping_postal_code' => ['required', 'string', 'max:20'],
-            'payment_method' => ['required', 'in:cash_on_delivery,bank_transfer'],
+            'payment_method' => ['required', 'in:cash_on_delivery,bkash,nagad,rocket,upay,bank_dutch_bangla,bank_brac,bank_city,bank_ebl,bank_islami,bank_sonali'],
         ]);
 
         $order = DB::transaction(function () use ($request, $data) {
@@ -121,18 +125,27 @@ class CartController extends Controller
                 return compact('cart', 'product', 'price');
             });
 
-            $subtotal = round($items->sum(fn ($item) => $item['price'] * $item['cart']->quantity), 2);
-            $shipping = $subtotal >= 250 ? 0 : 12;
+            $subtotal = round($items->sum(
+                fn ($item) => (float) $item['product']->price * $item['cart']->quantity,
+            ), 2);
+            $discountedSubtotal = round($items->sum(
+                fn ($item) => $item['price'] * $item['cart']->quantity,
+            ), 2);
+            $discount = round($subtotal - $discountedSubtotal, 2);
+            $shipping = $this->shippingFee($data['shipping_city']);
             $order = Order::query()->create([
                 ...$data,
                 'user_id' => $request->user()->id,
                 'order_number' => 'ORD-'.now()->format('Ymd').'-'.Str::upper(Str::random(8)),
                 'status' => 'pending',
                 'payment_status' => 'pending',
+                'gateway_transaction_id' => $data['payment_method'] === 'cash_on_delivery'
+                    ? null
+                    : 'PAY-'.now()->format('YmdHis').'-'.Str::upper(Str::random(10)),
                 'subtotal' => $subtotal,
-                'discount' => 0,
+                'discount' => $discount,
                 'shipping' => $shipping,
-                'total' => round($subtotal + $shipping, 2),
+                'total' => round($subtotal - $discount + $shipping, 2),
                 'stock_deducted' => true,
                 'ordered_at' => now(),
             ]);
@@ -154,7 +167,33 @@ class CartController extends Controller
             return $order;
         });
 
-        return to_route('orders.success', $order);
+        if ($order->payment_method === 'cash_on_delivery') {
+            return to_route('orders.success', $order);
+        }
+
+        try {
+            $gatewayUrl = app(SslCommerzGateway::class)->initiate($order);
+
+            return Inertia::location($gatewayUrl);
+        } catch (Throwable $exception) {
+            Log::error('SSLCOMMERZ payment initiation failed.', [
+                'order_id' => $order->id,
+                'message' => $exception->getMessage(),
+            ]);
+
+            DB::transaction(function () use ($order, $exception) {
+                $lockedOrder = Order::query()->with('items')->lockForUpdate()->findOrFail($order->id);
+                $this->releaseReservedStock($lockedOrder);
+                $lockedOrder->update([
+                    'payment_status' => 'failed',
+                    'gateway_status' => 'initiation_failed',
+                    'gateway_response' => ['message' => $exception->getMessage()],
+                ]);
+            });
+
+            return to_route('orders.show', $order)
+                ->with('error', 'The payment gateway could not be started. Please try again or contact support.');
+        }
     }
 
     public function success(Request $request, Order $order)
@@ -176,17 +215,57 @@ class CartController extends Controller
 
             return $cart;
         });
-        $subtotal = round($carts->sum('line_total'), 2);
+        $subtotal = round($carts->sum(
+            fn (Cart $cart) => (float) $cart->price * $cart->quantity,
+        ), 2);
+        $discountedSubtotal = round($carts->sum('line_total'), 2);
+        $discount = round($subtotal - $discountedSubtotal, 2);
 
         return [
             'carts' => $carts,
             'wishlists' => Wishlist::query()->where('user_id', $request->user()->id)->get(),
             'summary' => [
                 'subtotal' => $subtotal,
-                'shipping' => $subtotal > 0 && $subtotal < 250 ? 12 : 0,
-                'total' => $subtotal + ($subtotal > 0 && $subtotal < 250 ? 12 : 0),
+                'discount' => $discount,
+                'shipping' => $subtotal > 0 ? $this->shippingFee('') : 0,
+                'total' => $subtotal - $discount + ($subtotal > 0 ? $this->shippingFee('') : 0),
+            ],
+            'shipping' => [
+                'free_offer' => (bool) config('shipping.free_offer'),
+                'inside_dhaka_fee' => (float) config('shipping.inside_dhaka_fee'),
+                'outside_dhaka_fee' => (float) config('shipping.outside_dhaka_fee'),
             ],
         ];
+    }
+
+    private function releaseReservedStock(Order $order): void
+    {
+        if (! $order->stock_deducted) {
+            return;
+        }
+
+        foreach ($order->items as $item) {
+            if ($item->product_id) {
+                Product::query()->whereKey($item->product_id)->increment('stock', $item->quantity);
+            }
+        }
+
+        $order->update(['stock_deducted' => false]);
+    }
+
+    private function shippingFee(string $city): float
+    {
+        if (config('shipping.free_offer')) {
+            return 0;
+        }
+
+        $normalizedCity = Str::lower(trim($city));
+        $insideDhaka = $normalizedCity === 'dhaka'
+            || Str::contains($normalizedCity, ['dhaka city', 'ঢাকা']);
+
+        return (float) config(
+            $insideDhaka ? 'shipping.inside_dhaka_fee' : 'shipping.outside_dhaka_fee',
+        );
     }
 
     private function salePrice($price, $discount): float
