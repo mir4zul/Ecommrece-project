@@ -161,30 +161,31 @@ export default function Cart({ carts = [], wishlists = [], summary = {} }) {
                                 </h2>
                                 <dl className="mt-5 space-y-3 text-sm">
                                     <div className="flex justify-between">
-                                        <dt className="text-gray-500">
-                                            Subtotal
-                                        </dt>
+                                        <dt className="text-gray-500">Subtotal</dt>
                                         <dd className="font-semibold">
-                                            $
-                                            {Number(summary.subtotal).toFixed(
-                                                2,
-                                            )}
+                                            ৳{Number(summary.subtotal).toFixed(2)}
                                         </dd>
                                     </div>
+                                    {Number(summary.discount) > 0 && (
+                                        <div className="flex justify-between text-emerald-600">
+                                            <dt>Discount</dt>
+                                            <dd className="font-semibold">
+                                                −৳{Number(summary.discount).toFixed(2)}
+                                            </dd>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between">
-                                        <dt className="text-gray-500">
-                                            Shipping
-                                        </dt>
+                                        <dt className="text-gray-500">Shipping</dt>
                                         <dd className="font-semibold">
                                             {Number(summary.shipping) === 0
                                                 ? "Free"
-                                                : `$${Number(summary.shipping).toFixed(2)}`}
+                                                : `৳${Number(summary.shipping).toFixed(2)}`}
                                         </dd>
                                     </div>
                                     <div className="flex justify-between border-t border-gray-200 pt-4 text-base">
                                         <dt className="font-bold">Total</dt>
                                         <dd className="font-bold">
-                                            ${Number(summary.total).toFixed(2)}
+                                            ৳{Number(summary.total).toFixed(2)}
                                         </dd>
                                     </div>
                                 </dl>

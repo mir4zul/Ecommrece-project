@@ -4,10 +4,14 @@ import BoughtTogether from "@/Components/Home/BoughtTogether";
 import ProductDetails from "@/Components/Home/ProductDetails";
 import RelatedProducts from "@/Components/RelatedProducts";
 import { Head } from "@inertiajs/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function ShowProduct({ product, products, carts, wishlists }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, [product.id]);
 
     return (
         <div className="bg-slate-900">

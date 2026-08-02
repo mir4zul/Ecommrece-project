@@ -41,6 +41,12 @@ export default function OrderSuccess({ order, carts = [], wishlists = [] }) {
                                     {order.status}
                                 </span>
                             </div>
+                            <div className="mt-4 flex justify-between border-b pb-4">
+                                <span className="text-gray-500">Payment</span>
+                                <span className="font-semibold capitalize">
+                                    {order.payment_status}
+                                </span>
+                            </div>
                             <div className="mt-4 space-y-3">
                                 {order.items.map((item) => (
                                     <div
@@ -52,7 +58,7 @@ export default function OrderSuccess({ order, carts = [], wishlists = [] }) {
                                             {item.quantity}
                                         </span>
                                         <span className="font-semibold">
-                                            $
+                                            ৳
                                             {Number(item.line_total).toFixed(2)}
                                         </span>
                                     </div>
@@ -60,7 +66,7 @@ export default function OrderSuccess({ order, carts = [], wishlists = [] }) {
                             </div>
                             <div className="mt-5 flex justify-between border-t pt-4 text-lg font-bold">
                                 <span>Total</span>
-                                <span>${Number(order.total).toFixed(2)}</span>
+                                <span>৳{Number(order.total).toFixed(2)}</span>
                             </div>
                         </div>
                         <Link

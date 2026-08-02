@@ -61,6 +61,7 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 });
 
 function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
+    const showDetails = expanded || open;
     return (
         <>
             {open && (
@@ -96,14 +97,14 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                 </button>
 
                 <div
-                    className={`flex h-20 items-center border-b border-white/10 transition-all ${expanded ? "justify-between px-6" : "justify-center px-3"}`}
+                    className={`flex h-20 items-center border-b border-white/10 transition-all ${showDetails ? "justify-between px-6" : "justify-center px-3"}`}
                 >
                     <Link
                         href={route("dashboard")}
                         className="flex min-w-0 items-center gap-3"
                         aria-label="ShopHunt admin dashboard"
                     >
-                        {expanded ? (
+                        {showDetails ? (
                             <img
                                 src={logo}
                                 alt="ShopHunt admin"
@@ -130,10 +131,10 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                 </div>
 
                 <div
-                    className={`flex-1 overflow-x-hidden overflow-y-auto py-6 ${expanded ? "px-4" : "px-3"}`}
+                    className={`flex-1 overflow-x-hidden overflow-y-auto py-6 ${showDetails ? "px-4" : "px-3"}`}
                 >
                     <p
-                        className={`px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 ${expanded ? "block" : "hidden"}`}
+                        className={`px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 ${showDetails ? "block" : "hidden"}`}
                     >
                         Administration
                     </p>
@@ -147,9 +148,9 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                                     key={item.label}
                                     href={route(item.href)}
                                     onClick={onClose}
-                                    title={!expanded ? item.label : undefined}
+                                    title={!showDetails ? item.label : undefined}
                                     className={`flex items-center rounded-xl py-3 text-sm font-medium transition ${
-                                        expanded
+                                        showDetails
                                             ? "gap-3 px-3"
                                             : "justify-center px-2"
                                     } ${
@@ -161,7 +162,7 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                                     <Icon className="size-5 shrink-0" />
                                     <span
                                         className={
-                                            expanded
+                                            showDetails
                                                 ? "whitespace-nowrap"
                                                 : "hidden"
                                         }
@@ -173,7 +174,7 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                         })}
                     </nav>
 
-                    {expanded && (
+                    {showDetails && (
                         <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4">
                             <ChartBarSquareIcon className="size-7 text-red-400" />
                             <p className="mt-3 font-semibold text-white">
@@ -188,15 +189,15 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                 </div>
 
                 <div
-                    className={`border-t border-white/10 ${expanded ? "p-4" : "px-3 py-4"}`}
+                    className={`border-t border-white/10 ${showDetails ? "p-4" : "px-3 py-4"}`}
                 >
                     <div
-                        className={`flex items-center rounded-xl bg-white/5 ${expanded ? "gap-3 p-3" : "justify-center p-2"}`}
+                        className={`flex items-center rounded-xl bg-white/5 ${showDetails ? "gap-3 p-3" : "justify-center p-2"}`}
                     >
                         <span className="grid size-10 shrink-0 place-items-center rounded-full bg-red-600 font-bold text-white">
                             {user.name?.charAt(0).toUpperCase()}
                         </span>
-                        {expanded && (
+                        {showDetails && (
                             <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-semibold text-white">
                                     {user.name}
@@ -211,15 +212,15 @@ function Sidebar({ open, onClose, user, expanded, onExpandedChange }) {
                         href={route("logout")}
                         method="post"
                         as="button"
-                        title={!expanded ? "Sign out" : undefined}
+                        title={!showDetails ? "Sign out" : undefined}
                         className={`mt-3 flex w-full items-center rounded-lg py-2 text-sm text-slate-400 transition hover:bg-white/10 hover:text-white ${
-                            expanded
+                            showDetails
                                 ? "gap-3 px-3 text-left"
                                 : "justify-center px-2"
                         }`}
                     >
                         <ArrowLeftOnRectangleIcon className="size-5 shrink-0" />
-                        {expanded && <span>Sign out</span>}
+                        {showDetails && <span>Sign out</span>}
                     </Link>
                 </div>
             </aside>

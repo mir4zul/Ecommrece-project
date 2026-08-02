@@ -1,11 +1,15 @@
-import { Dialog, DialogPanel } from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import {
+    ArrowLeftOnRectangleIcon,
     Bars3Icon,
+    HomeIcon,
     HeartIcon,
     MagnifyingGlassIcon,
     MoonIcon,
+    ShoppingBagIcon,
     ShoppingCartIcon,
     SunIcon,
+    UserCircleIcon,
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../assets/shophunt-logo.png";
@@ -16,6 +20,7 @@ import PageDropDown from "./DropDown/PageDropDown";
 import CartDropDown from "./DropDown/CartDropDown";
 import MenuDropDown from "./DropDown/MenuDropDown";
 import WishlistDropDown from "./DropDown/WishlistDropDown";
+import { LanguageSwitcher } from "@/i18n/LanguageContext";
 
 const navigation = [
     { name: "Home", href: "/" },
@@ -32,7 +37,8 @@ export default function Header({
     carts,
     wishlists,
 }) {
-    const { url: currentUrl } = usePage();
+    const { url: currentUrl, props: pageProps } = usePage();
+    const user = pageProps.auth?.user;
     const [dropdownOpen, setDropdownOpen] = useState("");
     const [searchQuery, setSearchQuery] = useState(
         () => new URLSearchParams(window.location.search).get("search") ?? "",
@@ -117,9 +123,9 @@ export default function Header({
         >
             <nav
                 aria-label="Global"
-                className={`mx-auto flex max-w-screen-2xl items-center justify-between transition-all duration-300 max-lg:flex-row-reverse ${isScrolled ? "min-h-[40px]" : "min-h-[85px]"}`}
+                className={`mx-auto grid max-w-screen-2xl grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 xl:flex xl:justify-between ${isScrolled ? "min-h-14" : "min-h-[85px]"}`}
             >
-                <div className="lg:hidden flex gap-4 items-center">
+                <div className="order-3 flex items-center justify-self-end gap-2 sm:gap-4 xl:hidden">
                     <button
                         type="button"
                         onClick={toggleTheme}
@@ -139,10 +145,10 @@ export default function Header({
                     </button>
 
                     <div
-                        onMouseOver={() => {
+                        onMouseEnter={() => {
                             setDropdownOpen("wishlist");
                         }}
-                        onMouseOut={() => {
+                        onMouseLeave={() => {
                             setDropdownOpen("");
                         }}
                         className="relative"
@@ -157,10 +163,10 @@ export default function Header({
                     </div>
 
                     <div
-                        onMouseOver={() => {
+                        onMouseEnter={() => {
                             setDropdownOpen("cart");
                         }}
-                        onMouseOut={() => {
+                        onMouseLeave={() => {
                             setDropdownOpen("");
                         }}
                         className={`relative transition-all ${isScrolled ? "py-1" : "py-5"}`}
@@ -172,7 +178,7 @@ export default function Header({
                             />
 
                             <p className="absolute -bottom-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-semibold text-white bg-red-600 rounded-full">
-                                0
+                                {cartItems.length}
                             </p>
                         </div>
 
@@ -186,7 +192,7 @@ export default function Header({
                     </div>
                 </div>
 
-                <div className="flex lg:flex-1 justify-between items-center">
+                <div className="order-2 flex items-center justify-self-center xl:order-none xl:flex-1 xl:justify-between">
                     <Link
                         href={route("products.index")}
                         className="lg:-m-1.5 lg:p-1.5"
@@ -199,7 +205,7 @@ export default function Header({
                         />
                     </Link>
 
-                    <div className="hidden lg:flex lg:gap-x-8">
+                    <div className="hidden xl:flex xl:gap-x-8">
                         {navigation.map((item) => (
                             <div
                                 key={item.name}
@@ -259,7 +265,7 @@ export default function Header({
                     </div>
                 </div>
 
-                <div className="flex lg:hidden">
+                <div className="order-1 flex justify-self-start xl:hidden">
                     <button
                         type="button"
                         onClick={() => setMobileMenuOpen(true)}
@@ -270,7 +276,7 @@ export default function Header({
                     </button>
                 </div>
 
-                <div className="hidden min-w-0 lg:flex lg:flex-1 lg:justify-end lg:gap-6 xl:gap-12 2xl:gap-20">
+                <div className="hidden min-w-0 xl:flex xl:flex-1 xl:justify-end xl:gap-8 2xl:gap-14">
                     <form
                         onSubmit={submitSearch}
                         role="search"
@@ -322,13 +328,13 @@ export default function Header({
                         </button>
 
                         <div
-                            onMouseMove={() => {
+                            onMouseEnter={() => {
                                 setDropdownOpen("wishlist");
                             }}
                             onMouseLeave={() => {
                                 setDropdownOpen("");
                             }}
-                            className="relative h-[85px] flex items-center justify-center"
+                            className={`relative flex items-center justify-center ${isScrolled ? "h-14" : "h-[85px]"}`}
                         >
                             <div className="relative">
                                 <HeartIcon
@@ -351,13 +357,13 @@ export default function Header({
                         </div>
 
                         <div
-                            onMouseMove={() => {
+                            onMouseEnter={() => {
                                 setDropdownOpen("cart");
                             }}
                             onMouseLeave={() => {
                                 setDropdownOpen("");
                             }}
-                            className="relative h-[85px] flex items-center justify-center"
+                            className={`relative flex items-center justify-center ${isScrolled ? "h-14" : "h-[85px]"}`}
                         >
                             <div className="relative">
                                 <ShoppingCartIcon
@@ -379,8 +385,8 @@ export default function Header({
                         </div>
 
                         <div
-                            className="relative"
-                            onMouseMove={() => {
+                            className={`relative flex items-center justify-center ${isScrolled ? "h-14" : "h-[85px]"}`}
+                            onMouseEnter={() => {
                                 setDropdownOpen("menu");
                             }}
                             onMouseLeave={() => {
@@ -403,54 +409,170 @@ export default function Header({
             <Dialog
                 open={mobileMenuOpen}
                 onClose={setMobileMenuOpen}
-                className="lg:hidden"
+                className="relative z-[100] xl:hidden"
             >
-                <div className="fixed inset-0 z-50" />
-                <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-900 dark:text-gray-100 dark:sm:ring-white/10">
-                    <div className="flex items-center justify-between">
-                        <Link
-                            href={route("products.index")}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="-m-1.5 p-1.5"
+                <DialogBackdrop
+                    transition
+                    className="fixed inset-0 bg-slate-950/65 backdrop-blur-sm transition-opacity duration-300 ease-out data-[closed]:opacity-0"
+                />
+                <DialogPanel
+                    transition
+                    className="fixed inset-y-0 left-0 flex w-full flex-col overflow-hidden bg-slate-50 shadow-2xl ring-1 ring-black/10 transition duration-300 ease-out data-[closed]:-translate-x-full data-[closed]:opacity-90 sm:max-w-sm dark:bg-slate-950 dark:ring-white/10"
+                >
+                    <div className="relative overflow-hidden bg-slate-950 px-5 pb-6 pt-5 text-white">
+                        <div className="absolute -right-16 -top-16 size-40 rounded-full bg-red-600/30 blur-3xl" />
+                        <div className="relative flex items-center justify-between">
+                            <Link
+                                href={route("products.index")}
+                                onClick={() => setMobileMenuOpen(false)}
+                                aria-label="ShopHunt home"
+                            >
+                                <img
+                                    alt="ShopHunt"
+                                    src={logo}
+                                    className="h-14 w-auto"
+                                />
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="grid size-10 place-items-center rounded-full border border-white/10 bg-white/10 text-white transition hover:bg-red-600"
+                                aria-label="Close menu"
+                            >
+                                <XMarkIcon aria-hidden="true" className="size-5" />
+                            </button>
+                        </div>
+                        <p className="relative mt-3 text-xs font-medium uppercase tracking-[0.22em] text-slate-400">
+                            Shop smarter with ShopHunt
+                        </p>
+                        <form
+                            onSubmit={(event) => {
+                                submitSearch(event);
+                                setMobileMenuOpen(false);
+                            }}
+                            className="relative mt-5"
                         >
-                            <span className="sr-only">Your Company</span>
-                            <img
-                                alt="ShopHunt home"
-                                src={logo}
-                                className="h-14 w-auto"
+                            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
+                            <input
+                                type="search"
+                                value={searchQuery}
+                                onChange={(event) => updateSearchQuery(event.target.value)}
+                                placeholder="Search products..."
+                                className="w-full rounded-xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-400 focus:border-red-500 focus:ring-red-500"
                             />
-                        </Link>
+                        </form>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto px-4 py-5">
+                        <p className="px-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                            Explore
+                        </p>
+                        <nav className="mt-2 space-y-1" aria-label="Mobile navigation">
+                            {[
+                                { name: "Home", href: "/", icon: HomeIcon },
+                                { name: "Shop Products", href: "/shop-left-sidebar", icon: ShoppingBagIcon },
+                                { name: "Blog", href: "/blog", icon: Bars3Icon },
+                            ].map(({ name, href, icon: Icon }) => (
+                                <Link
+                                    key={name}
+                                    href={href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-white hover:text-red-600 hover:shadow-sm dark:text-slate-200 dark:hover:bg-slate-900"
+                                >
+                                    <span className="grid size-9 place-items-center rounded-lg bg-slate-200/70 text-slate-600 transition group-hover:bg-red-50 group-hover:text-red-600 dark:bg-slate-800 dark:text-slate-300 dark:group-hover:bg-red-950/50">
+                                        <Icon className="size-5" />
+                                    </span>
+                                    {name}
+                                </Link>
+                            ))}
+                        </nav>
+
+                        <div className="my-5 h-px bg-slate-200 dark:bg-slate-800" />
+                        <p className="px-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                            Shopping
+                        </p>
+                        <div className="mt-2 grid grid-cols-2 gap-3">
+                            <Link
+                                href={route("cart.index")}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-red-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <ShoppingCartIcon className="size-6 text-red-600" />
+                                    <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-bold text-red-600 dark:bg-red-950/50">
+                                        {cartItems.length}
+                                    </span>
+                                </div>
+                                <p className="mt-3 text-sm font-bold text-slate-800 dark:text-white">My Cart</p>
+                            </Link>
+                            <Link
+                                href={route("products.index")}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-red-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <HeartIcon className="size-6 text-red-600" />
+                                    <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-bold text-red-600 dark:bg-red-950/50">
+                                        {wishlistItems.length}
+                                    </span>
+                                </div>
+                                <p className="mt-3 text-sm font-bold text-slate-800 dark:text-white">Wishlist</p>
+                            </Link>
+                        </div>
+
+                        <div className="my-5 h-px bg-slate-200 dark:bg-slate-800" />
+                        <p className="px-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                            Account
+                        </p>
+                        {user ? (
+                            <div className="mt-2 space-y-1">
+                                <div className="mb-3 flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm dark:bg-slate-900">
+                                    <span className="grid size-10 place-items-center rounded-full bg-red-600 font-bold text-white">
+                                        {user.name?.charAt(0).toUpperCase()}
+                                    </span>
+                                    <div className="min-w-0">
+                                        <p className="truncate text-sm font-bold text-slate-800 dark:text-white">{user.name}</p>
+                                        <p className="truncate text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
+                                    </div>
+                                </div>
+                                {user.role === "admin" && (
+                                    <Link href={route("dashboard")} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 hover:bg-white hover:text-red-600 dark:text-slate-200 dark:hover:bg-slate-900">
+                                        <UserCircleIcon className="size-5" /> Admin Dashboard
+                                    </Link>
+                                )}
+                                <Link href={route("orders.index")} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 hover:bg-white hover:text-red-600 dark:text-slate-200 dark:hover:bg-slate-900">
+                                    <ShoppingBagIcon className="size-5" /> My Orders
+                                </Link>
+                                <Link href={route("profile.edit")} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 hover:bg-white hover:text-red-600 dark:text-slate-200 dark:hover:bg-slate-900">
+                                    <UserCircleIcon className="size-5" /> Profile
+                                </Link>
+                                <Link href={route("logout")} method="post" as="button" className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40">
+                                    <ArrowLeftOnRectangleIcon className="size-5" /> Sign out
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="mt-3 grid grid-cols-2 gap-3">
+                                <Link href={route("login")} onClick={() => setMobileMenuOpen(false)} className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-white">Log in</Link>
+                                <Link href={route("register")} onClick={() => setMobileMenuOpen(false)} className="rounded-xl bg-red-600 px-4 py-3 text-center text-sm font-bold text-white shadow-lg shadow-red-600/20">Register</Link>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="border-t border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                        <div className="mb-3 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-2 dark:bg-slate-800">
+                            <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                Language
+                            </span>
+                            <LanguageSwitcher />
+                        </div>
                         <button
                             type="button"
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-200"
+                            onClick={toggleTheme}
+                            className="flex w-full items-center justify-between rounded-xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
                         >
-                            <span className="sr-only">Close menu</span>
-                            <XMarkIcon aria-hidden="true" className="size-6" />
+                            <span>{isDark ? "Dark mode" : "Light mode"}</span>
+                            {isDark ? <MoonIcon className="size-5" /> : <SunIcon className="size-5" />}
                         </button>
-                    </div>
-                    <div className="mt-6 flow-root">
-                        <div className="-my-6 divide-y divide-gray-500/10">
-                            <div className="space-y-2 py-6">
-                                {navigation.map((item) => (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href}
-                                        className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-gray-800"
-                                    >
-                                        {item.name}
-                                    </Link>
-                                ))}
-                            </div>
-                            <div className="py-6">
-                                <a
-                                    href="#"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-gray-800"
-                                >
-                                    Log in
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </DialogPanel>
             </Dialog>

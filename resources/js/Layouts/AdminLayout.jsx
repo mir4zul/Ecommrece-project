@@ -46,6 +46,7 @@ export default function AdminLayout({ title, subtitle, actions, children }) {
     const user = usePage().props.auth.user;
     const [mobileOpen, setMobileOpen] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const showDetails = expanded || mobileOpen;
 
     return (
         <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
@@ -77,14 +78,14 @@ export default function AdminLayout({ title, subtitle, actions, children }) {
                     )}
                 </button>
                 <div
-                    className={`flex h-20 items-center border-b border-white/10 ${expanded ? "justify-between px-6" : "justify-center px-3"}`}
+                    className={`flex h-20 items-center border-b border-white/10 ${showDetails ? "justify-between px-6" : "justify-center px-3"}`}
                 >
                     <Link
                         href={route("dashboard")}
                         className="flex items-center gap-3"
                         aria-label="ShopHunt admin dashboard"
                     >
-                        {expanded ? (
+                        {showDetails ? (
                             <img
                                 src={logo}
                                 alt="ShopHunt admin"
@@ -110,7 +111,7 @@ export default function AdminLayout({ title, subtitle, actions, children }) {
                     </button>
                 </div>
                 <nav
-                    className={`flex-1 space-y-1.5 overflow-x-hidden overflow-y-auto py-6 ${expanded ? "px-4" : "px-3"}`}
+                    className={`flex-1 space-y-1.5 overflow-x-hidden overflow-y-auto py-6 ${showDetails ? "px-4" : "px-3"}`}
                 >
                     {links.map((item) => {
                         const Icon = item.icon;
@@ -120,11 +121,11 @@ export default function AdminLayout({ title, subtitle, actions, children }) {
                                 key={item.label}
                                 href={route(item.routeName)}
                                 onClick={() => setMobileOpen(false)}
-                                title={!expanded ? item.label : undefined}
-                                className={`flex items-center rounded-xl py-3 text-sm font-medium transition ${expanded ? "gap-3 px-3" : "justify-center px-2"} ${active ? "bg-red-600 text-white" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}
+                                title={!showDetails ? item.label : undefined}
+                                className={`flex items-center rounded-xl py-3 text-sm font-medium transition ${showDetails ? "gap-3 px-3" : "justify-center px-2"} ${active ? "bg-red-600 text-white" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}
                             >
                                 <Icon className="size-5 shrink-0" />
-                                {expanded && (
+                                {showDetails && (
                                     <span className="whitespace-nowrap">
                                         {item.label}
                                     </span>
@@ -134,15 +135,15 @@ export default function AdminLayout({ title, subtitle, actions, children }) {
                     })}
                 </nav>
                 <div
-                    className={`border-t border-white/10 ${expanded ? "p-4" : "p-3"}`}
+                    className={`border-t border-white/10 ${showDetails ? "p-4" : "p-3"}`}
                 >
                     <div
-                        className={`flex items-center rounded-xl bg-white/5 ${expanded ? "gap-3 p-3" : "justify-center p-2"}`}
+                        className={`flex items-center rounded-xl bg-white/5 ${showDetails ? "gap-3 p-3" : "justify-center p-2"}`}
                     >
                         <span className="grid size-10 shrink-0 place-items-center rounded-full bg-red-600 font-bold text-white">
                             {user.name?.charAt(0).toUpperCase()}
                         </span>
-                        {expanded && (
+                        {showDetails && (
                             <div className="min-w-0">
                                 <p className="truncate text-sm font-semibold text-white">
                                     {user.name}
@@ -157,11 +158,11 @@ export default function AdminLayout({ title, subtitle, actions, children }) {
                         href={route("logout")}
                         method="post"
                         as="button"
-                        title={!expanded ? "Sign out" : undefined}
-                        className={`mt-2 flex w-full items-center rounded-lg py-2 text-sm text-slate-400 hover:bg-white/10 hover:text-white ${expanded ? "gap-3 px-3" : "justify-center px-2"}`}
+                        title={!showDetails ? "Sign out" : undefined}
+                        className={`mt-2 flex w-full items-center rounded-lg py-2 text-sm text-slate-400 hover:bg-white/10 hover:text-white ${showDetails ? "gap-3 px-3" : "justify-center px-2"}`}
                     >
                         <ArrowLeftOnRectangleIcon className="size-5" />
-                        {expanded && <span>Sign out</span>}
+                        {showDetails && <span>Sign out</span>}
                     </Link>
                 </div>
             </aside>

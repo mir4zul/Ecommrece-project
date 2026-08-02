@@ -15,6 +15,19 @@ const getSalePrice = (product) => {
 
     return price - (price * discount) / 100;
 };
+const GridLayoutIcon = ({ columns }) => (
+    <span
+        aria-hidden="true"
+        className="grid h-4 w-5 gap-0.5"
+        style={{
+            gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+        }}
+    >
+        {Array.from({ length: columns * 2 }).map((_, index) => (
+            <span key={index} className="rounded-[1px] bg-current" />
+        ))}
+    </span>
+);
 
 export default function ShopLeftSidebar({
     products = [],
@@ -35,6 +48,8 @@ export default function ShopLeftSidebar({
     const [onlyTopRated, setOnlyTopRated] = useState(false);
     const [sortBy, setSortBy] = useState("featured");
     const [perPage, setPerPage] = useState(10);
+    const [mobileGridColumns, setMobileGridColumns] = useState(2);
+    const [gridColumns, setGridColumns] = useState(3);
     const [currentPage, setCurrentPage] = useState(1);
     const { get } = useForm();
 
@@ -401,6 +416,26 @@ export default function ShopLeftSidebar({
                                     of {filteredProducts.length} matching
                                     products
                                 </p>
+                                <div className="sm:hidden">
+                                    <div className="flex items-center gap-1" aria-label="Products per row on mobile">
+                                        {[1, 2].map((columns) => (
+                                            <button key={columns} type="button" onClick={() => setMobileGridColumns(columns)} aria-label={`Show ${columns} product${columns > 1 ? "s" : ""} per row`} aria-pressed={mobileGridColumns === columns} className={`grid size-9 place-items-center rounded-lg border transition ${mobileGridColumns === columns ? "border-red-600 bg-red-600 text-white" : "border-gray-300 bg-white text-gray-600 hover:border-red-500 hover:text-red-600"}`}>
+                                                <GridLayoutIcon columns={columns} />
+
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="hidden xl:block">
+                                    <div className="flex items-center gap-1" aria-label="Products per row on desktop">
+                                        {[3, 4, 5].map((columns) => (
+                                            <button key={columns} type="button" onClick={() => setGridColumns(columns)} aria-label={`Show ${columns} products per row`} aria-pressed={gridColumns === columns} className={`grid size-9 place-items-center rounded-lg border transition ${gridColumns === columns ? "border-red-600 bg-red-600 text-white" : "border-gray-300 bg-white text-gray-600 hover:border-red-500 hover:text-red-600"}`}>
+                                                <GridLayoutIcon columns={columns} />
+
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                                 <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                                     Show
                                     <select
@@ -422,7 +457,7 @@ export default function ShopLeftSidebar({
                                 </label>
                             </div>
                             {filteredProducts.length > 0 ? (
-                                <div className="grid auto-rows-fr grid-cols-1 gap-5 min-[430px]:grid-cols-2 xl:grid-cols-3">
+                                <div className={`grid auto-rows-fr gap-1 sm:gap-[6px] ${gridColumns === 3 ? "xl:gap-2" : "xl:gap-[6px]"} ${mobileGridColumns === 2 ? "grid-cols-2" : "grid-cols-1"} ${gridColumns === 5 ? "xl:grid-cols-5" : gridColumns === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>
                                     {paginatedProducts.map((product) => (
                                         <article
                                             key={product.id}
