@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 // routes/products.php
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.show');
-Route::get('/shop-left-sidebar', [ProductController::class, 'shopLeftSidebar'])->name('products.shopLeftSidebar');
+Route::get('/all-product', [ProductController::class, 'shopLeftSidebar'])->name('products.shopLeftSidebar');
 
 Route::get('/blog', function () {
     return inertia('Blog');

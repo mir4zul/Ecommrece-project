@@ -23,8 +23,8 @@ import WishlistDropDown from "./DropDown/WishlistDropDown";
 import { LanguageSwitcher } from "@/i18n/LanguageContext";
 
 const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Shop", href: "/shop-left-sidebar", down: true },
+    { name: "Home", href: "/all-product" },
+    { name: "Shop", href: "/all-product", down: true },
     { name: "My Orders", href: "/my-orders" },
     { name: "Blog", href: "#" },
     { name: "Page", href: "#", down: true },
@@ -469,8 +469,8 @@ export default function Header({
                         </p>
                         <nav className="mt-2 space-y-1" aria-label="Mobile navigation">
                             {[
-                                { name: "Home", href: "/", icon: HomeIcon },
-                                { name: "Shop Products", href: "/shop-left-sidebar", icon: ShoppingBagIcon },
+                                { name: "Home", href: "/all-product", icon: HomeIcon },
+                                { name: "Shop Products", href: "/all-product", icon: ShoppingBagIcon },
                                 { name: "Blog", href: "/blog", icon: Bars3Icon },
                             ].map(({ name, href, icon: Icon }) => (
                                 <Link
